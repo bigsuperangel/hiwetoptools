@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.collection.tuple;
+package com.fj.hiwetoptools.tuple.bean;
 
 public class FourTuple<A, B,C,D> {
 	public final A a;

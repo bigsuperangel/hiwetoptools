@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.collection.tuple;
+package com.fj.hiwetoptools.tuple.bean;
 
 public class TwoTuple<A, B> {
 	public final A a;

@@ -1,9 +1,9 @@
-package com.fj.hiwetoptools.collection;
+package com.fj.hiwetoptools.tuple;
 
-import com.fj.hiwetoptools.collection.tuple.FiveTuple;
-import com.fj.hiwetoptools.collection.tuple.FourTuple;
-import com.fj.hiwetoptools.collection.tuple.ThreeTuple;
-import com.fj.hiwetoptools.collection.tuple.TwoTuple;
+import com.fj.hiwetoptools.tuple.bean.FiveTuple;
+import com.fj.hiwetoptools.tuple.bean.FourTuple;
+import com.fj.hiwetoptools.tuple.bean.ThreeTuple;
+import com.fj.hiwetoptools.tuple.bean.TwoTuple;
 
 /**
  * 元组调用，返回不定个数的结果集

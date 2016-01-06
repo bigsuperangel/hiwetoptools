@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.other;
+package com.fj.hiwetoptools;
 
 
 import java.util.HashMap;

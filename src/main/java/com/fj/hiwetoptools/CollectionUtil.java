@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2005-2012 springside.org.cn
  */
-package com.fj.hiwetoptools.collection;
+package com.fj.hiwetoptools;
 
 import java.util.ArrayList;
 import java.util.Collection;
