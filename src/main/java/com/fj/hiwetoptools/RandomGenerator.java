@@ -2,6 +2,11 @@ package com.fj.hiwetoptools;
 
 import java.util.Random;
 
+/**
+ * 随机生成
+ * @author linyu
+ *
+ */
 public final class RandomGenerator {
 	private Random random = null;
 
