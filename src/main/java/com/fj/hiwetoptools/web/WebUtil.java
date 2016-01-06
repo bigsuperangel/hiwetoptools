@@ -23,9 +23,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
-import com.fj.hiwetoptools.exception.SysException;
-import com.fj.hiwetoptools.json.GsonUtil;
-import com.fj.hiwetoptools.string.StringUtil;
+import com.fj.hiwetoptools.GsonUtil;
+import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.exception.bean.SysException;
 
 public class WebUtil {
 	public static final Logger logger = LoggerFactory.getLogger(WebUtil.class);

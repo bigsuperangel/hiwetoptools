@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.properties;
+package com.fj.hiwetoptools;
 
 
 import java.io.IOException;

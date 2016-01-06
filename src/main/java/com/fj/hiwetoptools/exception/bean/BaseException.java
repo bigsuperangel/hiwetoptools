@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.exception;
+package com.fj.hiwetoptools.exception.bean;
 
 public class BaseException extends RuntimeException
 {

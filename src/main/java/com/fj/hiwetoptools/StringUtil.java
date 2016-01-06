@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.string;
+package com.fj.hiwetoptools;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

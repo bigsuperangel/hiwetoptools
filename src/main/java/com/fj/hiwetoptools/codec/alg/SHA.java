@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.alg;
+package com.fj.hiwetoptools.codec.alg;
 
 import java.io.IOException;
 import java.io.InputStream;

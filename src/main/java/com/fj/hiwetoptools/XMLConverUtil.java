@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.xml;
+package com.fj.hiwetoptools;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

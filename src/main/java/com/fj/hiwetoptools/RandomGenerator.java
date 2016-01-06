@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.random;
+package com.fj.hiwetoptools;
 
 import java.util.Random;
 

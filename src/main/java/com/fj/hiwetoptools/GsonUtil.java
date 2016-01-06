@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.json;
+package com.fj.hiwetoptools;
 
 import java.util.List;
 

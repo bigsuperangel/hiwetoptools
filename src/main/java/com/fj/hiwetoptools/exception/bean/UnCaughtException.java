@@ -1,4 +1,5 @@
-package com.fj.hiwetoptools.exception;
+package com.fj.hiwetoptools.exception.bean;
+
 
 
 

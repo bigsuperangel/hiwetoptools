@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.object;
+package com.fj.hiwetoptools;
 
 import java.util.Collection;
 import java.util.Date;

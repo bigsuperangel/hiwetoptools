@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools.file;
+package com.fj.hiwetoptools;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,8 +9,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
-
-import com.fj.hiwetoptools.random.RandomGenerator;
 
 public class FileUtil extends FileUtils {
 	public static long sizeOfDirectory(File paramFile) {
