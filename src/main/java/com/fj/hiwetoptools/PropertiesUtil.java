@@ -3,6 +3,8 @@ package com.fj.hiwetoptools;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
@@ -52,4 +54,17 @@ public class PropertiesUtil {
 	public String getProperties(String propertyName) {
 		return prop.getProperty(propertyName);
 	}
+	
+	public Enumeration<?> propertyNames(){
+		return prop.propertyNames();
+	}
+	
+	public Collection<Object> values(){
+		return prop.values();
+	}
+	
+	public boolean isEmpty(){
+		return prop.isEmpty();
+	}
+	
 }
