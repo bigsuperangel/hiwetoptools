@@ -1,5 +1,7 @@
 package com.fj.hiwetoptools.web.bean;
 
+import org.apache.commons.lang3.Validate;
+
 import com.fj.hiwetoptools.GsonUtil;
 
 /**
@@ -14,12 +16,14 @@ public class ResultModel {
 	private Object datas = null;
 
 	public ResultModel(boolean success, BaseResultEnums respEnum) {
+		Validate.notNull(respEnum, "BaseResultEnums不能为空");
 		this.success = success;
 		this.msg = respEnum.getMsg();
 		this.code = respEnum.getCode();
 	}
 
 	public ResultModel(boolean success, BaseResultEnums respEnum, Object datas) {
+		Validate.notNull(respEnum, "BaseResultEnums不能为空");
 		this.success = success;
 		this.msg = respEnum.getMsg();
 		this.code = respEnum.getCode();
