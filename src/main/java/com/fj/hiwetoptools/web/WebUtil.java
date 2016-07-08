@@ -1,15 +1,11 @@
 package com.fj.hiwetoptools.web;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -19,13 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.fj.hiwetoptools.GsonUtil;
 import com.fj.hiwetoptools.StringUtil;
-import com.fj.hiwetoptools.exception.bean.SysException;
 
 public class WebUtil {
 	public static final Logger logger = LoggerFactory.getLogger(WebUtil.class);
@@ -248,48 +244,10 @@ public class WebUtil {
 			os.write(b);
 			os.flush();
 		} catch (Exception localException) {
-			IOUtils.closeQuietly(is);
-			IOUtils.closeQuietly(os);
+			logger.error(localException.getMessage(),localException);
 		} finally {
 			IOUtils.closeQuietly(is);
 			IOUtils.closeQuietly(os);
-		}
-	}
-
-	public static String simpleHttpGet(String url, Map<String, Object> header) {
-		HttpURLConnection connection = null;
-		BufferedReader reader = null;
-		try {
-			logger.info("抓取开始 url=" + url + " \n header = " + header);
-			URL urlObj = new URL(url);
-
-			connection = (HttpURLConnection) urlObj.openConnection();
-
-			connection.connect();
-
-			reader = new BufferedReader(new InputStreamReader(
-					connection.getInputStream()));
-
-			StringBuilder strb = new StringBuilder();
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				strb.append(line);
-			}
-
-			logger.info("抓取完成  返回内容[" + strb.toString() + "] url=" + url);
-			return strb.toString();
-		} catch (Exception e) {
-			logger.error("抓取页面url=" + url + "出现异常", e);
-			throw new SysException("抓取页面url=" + url + "出现异常：" + e.getMessage(),
-					e);
-		} finally {
-			IOUtils.closeQuietly(reader);
-			if (connection != null)
-				try {
-					connection.disconnect();
-				} catch (Exception e) {
-					logger.error("关闭抓取流出现异常", e);
-				}
 		}
 	}
 
