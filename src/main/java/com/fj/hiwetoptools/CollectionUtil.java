@@ -6,6 +6,7 @@ package com.fj.hiwetoptools;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -229,5 +230,73 @@ public class CollectionUtil {
 			}
 		}
 		return list;
+	}
+	
+
+	/**
+	 * 新建一个HashMap
+	 * 
+	 * @return HashMap对象
+	 */
+	public static <T, K> HashMap<T, K> newHashMap() {
+		return new HashMap<T, K>();
+	}
+
+	/**
+	 * 新建一个HashMap
+	 * 
+	 * @param size 初始大小，由于默认负载因子0.75，传入的size会实际初始大小为size / 0.75
+	 * @return HashMap对象
+	 */
+	public static <T, K> HashMap<T, K> newHashMap(int size) {
+		return new HashMap<T, K>((int) (size / 0.75));
+	}
+
+	/**
+	 * 新建一个HashSet
+	 * @param ts 元素数组
+	 * @return HashSet对象
+	 */
+	@SafeVarargs
+	public static <T> HashSet<T> newHashSet(T... ts) {
+		HashSet<T> set = new HashSet<T>();
+		for (T t : ts) {
+			set.add(t);
+		}
+		return set;
+	}
+	
+	/**
+	 * 新建一个HashSet
+	 * 
+	 * @return HashSet对象
+	 */
+	public static <T> HashSet<T> newHashSet(Collection<T> collection) {
+		HashSet<T> set = new HashSet<T>();
+		set.addAll(collection);
+		return set;
+	}
+
+	/**
+	 * 新建一个ArrayList
+	 * @param values 数组
+	 * @return ArrayList对象
+	 */
+	@SafeVarargs
+	public static <T> ArrayList<T> newArrayList(T... values) {
+		ArrayList<T> arrayList = new ArrayList<T>();
+		for (T t : values) {
+			arrayList.add(t);
+		}
+		return arrayList;
+	}
+	
+	/**
+	 * 新建一个ArrayList
+	 * @param collection 集合
+	 * @return ArrayList对象
+	 */
+	public static <T> ArrayList<T> newArrayList(Collection<T> collection) {
+		return new ArrayList<T>(collection);
 	}
 }
