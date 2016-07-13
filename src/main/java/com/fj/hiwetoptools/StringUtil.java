@@ -3,6 +3,8 @@ package com.fj.hiwetoptools;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -342,6 +344,67 @@ public class StringUtil extends org.apache.commons.lang3.StringUtils {
 		}
 		result.append(val.substring(1));
 		return result.toString();
+	}
+	
+	/**
+	 * 格式化文本, {} 表示占位符<br>
+	 * 例如：format("aaa {} ccc", "bbb")   ---->    aaa bbb ccc
+	 * 
+	 * @param template 文本模板，被替换的部分用 {} 表示
+	 * @param values 参数值
+	 * @return 格式化后的文本
+	 */
+	public static String format(String template, Object... values) {
+		if (CollectionUtil.isEmpty(values) || isBlank(template)) {
+			return template;
+		}
+
+		final StringBuilder sb = new StringBuilder();
+		final int length = template.length();
+
+		int valueIndex = 0;
+		char currentChar;
+		for (int i = 0; i < length; i++) {
+			if (valueIndex >= values.length) {
+				sb.append(substring(template, i, length));
+				break;
+			}
+
+			currentChar = template.charAt(i);
+			if (currentChar == '{') {
+				final char nextChar = template.charAt(++i);
+				if (nextChar == '}') {
+					sb.append(values[valueIndex++]);
+				} else {
+					sb.append('{').append(nextChar);
+				}
+			} else {
+				sb.append(currentChar);
+			}
+
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * 格式化文本，使用 {varName} 占位<br>
+	 * map = {a: "aValue", b: "bValue"}
+	 * format("{a} and {b}", map)    ---->    aValue and bValue
+	 * 
+	 * @param template 文本模板，被替换的部分用 {key} 表示
+	 * @param map 参数值对
+	 * @return 格式化后的文本
+	 */
+	public static String format(String template, Map<?, ?> map) {
+		if (null == map || map.isEmpty()) {
+			return template;
+		}
+
+		for (Entry<?, ?> entry : map.entrySet()) {
+			template = template.replace("{" + entry.getKey() + "}", entry.getValue().toString());
+		}
+		return template;
 	}
 
 }

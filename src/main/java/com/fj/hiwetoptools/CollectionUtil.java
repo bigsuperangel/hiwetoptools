@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fj.hiwetoptools.reflect.ReflectionUtil;
@@ -100,11 +101,65 @@ public class CollectionUtil {
 	}
 
 	/**
-	 * 判断是否为空.
+	 * 集合是否为空
+	 * 
+	 * @param collection 集合
+	 * @return 是否为空
 	 */
-	public static boolean isEmpty(Collection collection) {
-		return (collection == null || collection.isEmpty());
+	public static boolean isEmpty(Collection<?> collection) {
+		return collection == null || collection.isEmpty();
 	}
+
+	/**
+	 * 集合是否为非空
+	 * 
+	 * @param collection 集合
+	 * @return 是否为非空
+	 */
+	public static boolean isNotEmpty(Collection<?> collection) {
+		return false == isEmpty(collection);
+	}
+
+	/**
+	 * Map是否为空
+	 * 
+	 * @param map 集合
+	 * @return 是否为空
+	 */
+	public static boolean isEmpty(Map<?, ?> map) {
+		return map == null || map.isEmpty();
+	}
+
+	/**
+	 * Map是否为非空
+	 * 
+	 * @param map 集合
+	 * @return 是否为非空
+	 */
+	public static <T> boolean isNotEmpty(Map<?, ?> map) {
+		return false == isEmpty(map);
+	}
+	
+	/**
+	 * 数组是否为空
+	 * 
+	 * @param array 数组
+	 * @return 是否为空
+	 */
+	public static <T> boolean isEmpty(T[] array) {
+		return array == null || array.length <= 0;
+	}
+
+	/**
+	 * 数组是否为非空
+	 * 
+	 * @param array 数组
+	 * @return 是否为非空
+	 */
+	public static <T> boolean isNotEmpty(T[] array) {
+		return false == isEmpty(array);
+	}
+
 
 	/**
 	 * 取得Collection的第一个元素，如果collection为空返回null.
