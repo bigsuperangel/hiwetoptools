@@ -17,9 +17,19 @@
 	<!-- 设定主仓库，按设定顺序进行查找。 -->
 	<repositories>
 
-		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址. <repository> <id>nexus-repos</id> <name>Team 
-			Nexus Repository</name> <url>http://192.168.11.36:8888/nexus/content/groups/public</url> 
-			</repository> -->
+		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址. -->
+
+		<repository>
+			<id>nexus-repos</id>
+			<name>maven-public</name>
+			<url>http://192.168.0.114:8081/repository/maven-public/</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
 
 		<repository>
 			<id>oschina-repos</id>
@@ -50,9 +60,18 @@
 	<!-- 设定插件仓库 -->
 	<pluginRepositories>
 
-		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址. <pluginRepository> <id>nexus-repos</id> 
-			<name>Team Nexus Repository</name> <url>http://192.168.11.36:8888/nexus/content/groups/public</url> 
-			</pluginRepository> -->
+		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址. -->
+		<pluginRepository>
+			<id>nexus-repos</id>
+			<name>maven-public</name>
+			<url>http://192.168.0.114:8081/repository/maven-public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
 
 		<pluginRepository>
 			<id>oschina-repos</id>
@@ -61,6 +80,19 @@
 		</pluginRepository>
 
 	</pluginRepositories>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>nexus</id>
+			<name>Nexus Snapshot</name>
+			<url>http://192.168.0.114:8081/repository/maven-snapshots/</url>
+		</snapshotRepository>
+		<site>
+			<id>nexus</id>
+			<name>Nexus Sites</name>
+			<url>dav:http://192.168.0.114:8081/repository/maven-snapshots/</url>
+		</site>
+	</distributionManagement>
 
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
