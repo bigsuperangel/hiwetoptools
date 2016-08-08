@@ -4,7 +4,7 @@
 
 	<groupId>com.fj</groupId>
 	<artifactId>hiwetoptools</artifactId>
-	<version>2.1.0</version>
+	<version>2.1.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>hiwetoptools</name>
@@ -18,7 +18,6 @@
 	<repositories>
 
 		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址. -->
-
 		<repository>
 			<id>nexus-repos</id>
 			<name>maven-public</name>
@@ -81,22 +80,17 @@
 
 	</pluginRepositories>
 
-	<!-- <distributionManagement> <snapshotRepository> <id>nexus</id> <name>maven-snapshots</name> 
-		<url>http://192.168.0.114:8081/repository/maven-snapshots/</url> </snapshotRepository> 
-		<site> <id>nexus</id> <name>Nexus Sites</name> <url>dav:http://192.168.0.114:8081/repository/maven-snapshots/</url> 
-		</site> </distributionManagement> -->
-
 	<distributionManagement>
-<!-- 		<snapshotRepository>
-			<id>nexus</id>
+ 		<snapshotRepository>
+			<id>nexus-snapshots</id>
 			<name>maven-snapshots</name>
 			<url>http://192.168.0.114:8081/repository/maven-snapshots/</url>
-		</snapshotRepository> -->
+		</snapshotRepository>
 
 		<!-- 发布releases包到nexus私服 -->
 		<repository>
-			<id>nexus</id>
-			<name>maven-snapshots</name>
+			<id>nexus-releases</id>
+			<name>maven-releases</name>
 			<url>http://192.168.0.114:8081/repository/maven-releases/</url>
 		</repository>
 	</distributionManagement>
@@ -185,10 +179,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>3.5.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<compilerArgument>-Xlint:all</compilerArgument>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>

@@ -300,9 +300,6 @@ public class HttpUtil {
 
 	/**
 	 * https 域名校验
-	 * 
-	 * @param url
-	 * @param params
 	 * @return
 	 */
 	public class TrustAnyHostnameVerifier implements HostnameVerifier {
