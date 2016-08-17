@@ -2,6 +2,7 @@ package com.fj.hiwetoptools.reflect;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fj.hiwetoptools.CollectionUtil;
 
 /**
  * 操作bean 与map之间的转换
@@ -47,6 +50,8 @@ public class BeanUtil {
 	 * @return
 	 */
 	public static List<Map<String, Object>> getListFromBean(List<?> list,String[] needFields){
+		if(CollectionUtil.isEmpty(list)) return Collections.EMPTY_LIST;
+		
 		List<?> list1 = list;
 		List<Map<String, Object>> resultList = new ArrayList<Map<String,Object>>();
 		for (Object object : list1) {
@@ -71,6 +76,71 @@ public class BeanUtil {
 			log.error("beanUtil getBeanFromMap:"+e);
 		}
 		return bean;
+	}
+	
+	/**
+	 * 从list bean中取出map组装成list map,然后克隆值到list
+	 * @param list
+	 * @param needFields
+	 * @param name
+	 * @param value
+	 * @return
+	 */
+	public static List<Map<String, Object>> getListFromBean(List<?> list,String[] needFields,String name,Object value){
+		if(CollectionUtil.isEmpty(list)) return Collections.EMPTY_LIST;
+		
+		List<?> list1 = list;
+		List<Map<String, Object>> resultList = new ArrayList<Map<String,Object>>();
+		for (Object object : list1) {
+			Map<String, Object> map = getMapFromBean(object,needFields);
+			try {
+				BeanUtils.copyProperty(map, name, value);
+			} catch (IllegalAccessException e) {
+				log.error("beanUtil getListFromBean:"+e);
+			} catch (InvocationTargetException e) {
+				log.error("beanUtil getListFromBean:"+e);
+			}
+			resultList.add(map);
+		}
+		return resultList;
+	}
+	
+	/**
+	 * 从list entity中copy元素到list map ,并复制额外的值到list map
+	 * @param list
+	 * @param needFields 所需要的元素
+	 * @param copyMap
+	 * @return
+	 */
+	public static List<Map<String, Object>> getListFromBean(List<?> list,String[] needFields,Map<String,Object> copyMap){
+		if(CollectionUtil.isEmpty(list))
+			return Collections.EMPTY_LIST;
+		
+		List<?> list1 = list;
+		List<Map<String, Object>> resultList = new ArrayList<Map<String,Object>>();
+		for (Object object : list1) {
+			Map<String, Object> map = getMapFromBean(object,needFields);
+			copyProperty(map, copyMap);
+			resultList.add(map);
+		}
+		return resultList;
+	}
+	
+	/**
+	 * copy多个键值对到bean
+	 * @param bean
+	 * @param copyMap
+	 */
+    public static void copyProperty(Object bean, Map<String,Object> copyMap){
+    	for(Map.Entry<String, Object> entry : copyMap.entrySet()){
+    	    try {
+				BeanUtils.copyProperty(bean, entry.getKey(),  entry.getValue());
+			} catch (IllegalAccessException e) {
+				log.error("beanUtil copyProperty:"+e);
+			} catch (InvocationTargetException e) {
+				log.error("beanUtil copyProperty:"+e);
+			}
+    	}
 	}
 
 }
