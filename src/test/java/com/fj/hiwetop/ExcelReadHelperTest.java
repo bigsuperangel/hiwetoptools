@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.fj.hiwetoptools.excel.ExcelReadHelper;
 import com.fj.hiwetoptools.excel.ReadRowMapper;
+import com.fj.hiwetoptools.exception.bean.ExcelException;
 
 public class ExcelReadHelperTest {
     
@@ -29,7 +30,7 @@ public class ExcelReadHelperTest {
     public void testReadExcel() {
         try {
             List<School> list = read.readExcel(0,null, new ReadRowMapper<School>() {
-                public School rowMap(Row row, Map<String, Object> map) throws Exception {
+                public School rowMap(Row row, Map<String, Object> map) throws ExcelException {
                     School school = new School();
                     school.setSchoolNumber(((Double)map.get("学校标号")).intValue());
                     school.setSchoolName((String)map.get("校名"));

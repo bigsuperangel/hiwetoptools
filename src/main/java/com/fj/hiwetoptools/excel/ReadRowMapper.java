@@ -11,6 +11,9 @@ import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Row;
 
+import com.fj.hiwetoptools.exception.bean.BaseException;
+import com.fj.hiwetoptools.exception.bean.ExcelException;
+
 /**.
  * @author 赵海龙
  * @version 1.0
@@ -22,5 +25,5 @@ public interface ReadRowMapper<T> {
      * @param row excel中的行数据
      * @throws Exception 
      */
-    T rowMap(Row row,Map<String, Object> map) throws Exception;
+    T rowMap(Row row,Map<String, Object> map) throws ExcelException;
 }

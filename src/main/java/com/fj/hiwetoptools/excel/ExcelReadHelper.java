@@ -9,6 +9,7 @@ package com.fj.hiwetoptools.excel;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,6 +26,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import com.fj.hiwetoptools.exception.bean.BaseException;
+import com.fj.hiwetoptools.exception.bean.ExcelException;
 
 /**.Excel导入工具类
  * @author 赵海龙
@@ -43,7 +47,7 @@ public class ExcelReadHelper {
      * @throws InvalidFormatException 
      * @throws EncryptedDocumentException 
      */
-    public ExcelReadHelper(String filePath) throws EncryptedDocumentException, InvalidFormatException, IOException {
+    public ExcelReadHelper(String filePath) throws ExcelException {
         super();
         this.filePath = filePath;
         initWorkBook();
@@ -65,22 +69,20 @@ public class ExcelReadHelper {
      * @throws InvalidFormatException
      * @throws IOException
      */
-    private void initWorkBook() throws EncryptedDocumentException, InvalidFormatException, IOException{
+    private void initWorkBook() throws ExcelException {
         if(filePath == null || filePath.trim().length() <= 0){
-            throw new InvalidFormatException("文件路径不能为空!");
+            throw new ExcelException("文件路径不能为空!");
         }
         File file = new File(filePath);
         FileInputStream fs = null;
-        if (file.exists() && file.length() > 0) {
-            if (suffixCheck(filePath)) {
-                fs = new FileInputStream(file);
-                workBook = WorkbookFactory.create(fs);
-            }else {
-                throw new IOException("文件不是合法Excel文件!");
-            }
-        }else {
-            throw new IOException("文件不存在!");
-        }
+        if(!file.exists()) throw new ExcelException("文件不存在!");
+        if(!suffixCheck(filePath))  throw new ExcelException("文件不合法的excel类型!");
+        try {
+			fs = new FileInputStream(file);
+			workBook = WorkbookFactory.create(fs);
+		} catch (Exception e) {
+			throw new ExcelException("初始化失败",e);
+		}
     }
     /**
      * . 方法：获取导入Excel中的列数
@@ -100,7 +102,7 @@ public class ExcelReadHelper {
      * @param rowMapper 数据处理接口
      * @throws Exception 
      */
-    public <T> List<T> readExcel(int sheetIndex, String[] title, ReadRowMapper<T> rowMapper) throws Exception  {
+    public <T> List<T> readExcel(int sheetIndex, String[] title, ReadRowMapper<T> rowMapper) throws ExcelException  {
         Sheet sheet = workBook.getSheetAt(sheetIndex);
         List<T> list = new ArrayList<T>();
         for (Row row : sheet) {
