@@ -31,9 +31,6 @@ public class ExcelReadHelperTest {
             List<School> list = read.readExcel(0,null, new ReadRowMapper<School>() {
                 public School rowMap(Row row, Map<String, Object> map) throws Exception {
                     School school = new School();
-                    if(((Double)map.get("学校标号")).intValue()==573){
-                    	throw new Exception("失败");
-                    }
                     school.setSchoolNumber(((Double)map.get("学校标号")).intValue());
                     school.setSchoolName((String)map.get("校名"));
                     school.setProvince((String)map.get("所在省"));
