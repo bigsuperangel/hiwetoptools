@@ -53,6 +53,12 @@ public class HttpUtil {
 
 	private static final String _GET = "GET"; // GET
 	private static final String _POST = "POST";// POST
+	
+	private static String charset = DEFAULT_CHARSET;
+	
+	public static void setDefaultCharset(String cs) {
+		charset = cs;
+	}
 
 	/**
 	 * 初始化http请求参数
@@ -143,7 +149,7 @@ public class HttpUtil {
 				http = initHttp(initParams(url, params), _GET, headers);
 			}
 			InputStream in = http.getInputStream();
-			BufferedReader read = new BufferedReader(new InputStreamReader(in, DEFAULT_CHARSET));
+			BufferedReader read = new BufferedReader(new InputStreamReader(in, charset));
 			String valueString = null;
 			bufferRes = new StringBuffer();
 			while ((valueString = read.readLine()) != null) {
@@ -195,12 +201,12 @@ public class HttpUtil {
 				http = initHttp(url, _POST, headers);
 			}
 			OutputStream out = http.getOutputStream();
-			out.write(params.getBytes(DEFAULT_CHARSET));
+			out.write(params.getBytes(charset));
 			out.flush();
 			out.close();
 
 			InputStream in = http.getInputStream();
-			BufferedReader read = new BufferedReader(new InputStreamReader(in, DEFAULT_CHARSET));
+			BufferedReader read = new BufferedReader(new InputStreamReader(in, charset));
 			String valueString = null;
 			bufferRes = new StringBuffer();
 			while ((valueString = read.readLine()) != null) {
@@ -283,7 +289,7 @@ public class HttpUtil {
 			url.append(entry.getKey()).append("=");
 			String value = entry.getValue();
 			if (StringUtil.isNotEmpty(value)) {
-				url.append(URLEncoder.encode(value, DEFAULT_CHARSET));
+				url.append(URLEncoder.encode(value, charset));
 			}
 		}
 		return url.toString();
