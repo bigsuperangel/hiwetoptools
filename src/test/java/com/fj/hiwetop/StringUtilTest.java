@@ -10,7 +10,7 @@ import com.fj.hiwetoptools.web.HttpUtil;
 
 public class StringUtilTest {
 	
-	@Test
+	//@Test
 	public void format() throws UnsupportedEncodingException{
 		System.out.println(StringUtil.format("{} test {}", "aaa","bbb"));
 		//HttpUtil.setDefaultCharset("gbk");
