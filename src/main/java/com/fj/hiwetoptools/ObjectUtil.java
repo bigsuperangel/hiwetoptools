@@ -1,8 +1,13 @@
 package com.fj.hiwetoptools;
 
+import java.lang.reflect.Array;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -20,6 +25,62 @@ public class ObjectUtil {
 	 */
 	public static boolean equals(Object obj1, Object obj2) {
 		return (obj1 != null) ? (obj1.equals(obj2)) : (obj2 == null);
+	}
+	
+	/**
+	 * 对象中是否包含元素
+	 * 
+	 * @param obj 对象
+	 * @param element 元素
+	 * @return 是否包含
+	 */
+	public static boolean contains(Object obj, Object element) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj instanceof String) {
+			if (element == null) {
+				return false;
+			}
+			return ((String) obj).contains(element.toString());
+		}
+		if (obj instanceof Collection) {
+			return ((Collection<?>) obj).contains(element);
+		}
+		if (obj instanceof Map) {
+			return ((Map<?, ?>) obj).values().contains(element);
+		}
+
+		if (obj instanceof Iterator) {
+			Iterator<?> iter = (Iterator<?>) obj;
+			while (iter.hasNext()) {
+				Object o = iter.next();
+				if (equals(o, element)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		if (obj instanceof Enumeration) {
+			Enumeration<?> enumeration = (Enumeration<?>) obj;
+			while (enumeration.hasMoreElements()) {
+				Object o = enumeration.nextElement();
+				if (equals(o, element)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		if (obj.getClass().isArray() == true) {
+			int len = Array.getLength(obj);
+			for (int i = 0; i < len; i++) {
+				Object o = Array.get(obj, i);
+				if (equals(o, element)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -145,8 +206,6 @@ public class ObjectUtil {
 	 *
 	 * @param obj
 	 * @return
-	 * @author qingwu
-	 * @date 2013-7-9 下午03:01:44
 	 */
 	@SuppressWarnings("rawtypes")
 	public static boolean isValueTypeWithoutDate(Class rClass) {
@@ -170,37 +229,62 @@ public class ObjectUtil {
 	}
 
 	/**
-	 * 是否是集合.
-	 *
-	 * @param obj
-	 * @return
-	 * @author qingwu
-	 * @date 2012-9-26 下午03:50:55
-	 */
-	public static boolean isCollection(Object obj) {
-		if (obj instanceof Collection<?>) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	/**
 	 * 对象是否是值类型.
 	 *
 	 * @param obj
-	 * @return
-	 * @author qingwu
-	 * @date 2012-9-26 下午03:01:44
 	 */
-	public static boolean isValueType(Object obj) {
-		if (obj == null || obj instanceof String || obj instanceof Number
-				|| obj instanceof Boolean || obj instanceof Character
-				|| obj instanceof Date) {
-			return true;
-		} else {
-			return false;
+	public static boolean isValueType(Object object) {
+		return object instanceof Byte || 
+				object instanceof Character || 
+				object instanceof Short || 
+				object instanceof Integer || 
+				object instanceof Long || 
+				object instanceof Boolean || 
+				object instanceof Float || 
+				object instanceof Double || 
+				object instanceof String || 
+				object instanceof BigInteger || 
+				object instanceof BigDecimal;
+	}
+
+	/**
+	 * 检查对象是否为null
+	 * 
+	 * @param obj 对象
+	 * @return 是否为null
+	 */
+	public static boolean isNull(Object obj) {
+		return null == obj;
+	}
+	
+	/**
+	 * 检查对象是否不为null
+	 * 
+	 * @param obj 对象
+	 * @return 是否为null
+	 */
+	public static boolean isNotNull(Object obj) {
+		return null != obj;
+	}
+	
+	/**
+	 * 是否是集合.
+	 * @param obj
+	 */
+	public static boolean isCollection(Object obj) {
+		return obj instanceof Collection<?>;
+	}
+
+	/**
+	 * 对象是否为数组对象
+	 * @param obj 对象
+	 * @return 是否为数组对象
+	 */
+	public static boolean isArray(Object obj) {
+		if(null == obj){
+			throw new NullPointerException("Object check for isArray is null");
 		}
+		return obj.getClass().isArray();
 	}
 
 }

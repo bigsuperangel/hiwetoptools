@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.URL;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -299,5 +300,30 @@ public class ReflectionUtil {
 			return (RuntimeException) e;
 		}
 		return new RuntimeException("Unexpected Checked Exception.", e);
+	}
+	
+	public static URL getURL(String resource) {
+		return getClassLoader().getResource(resource);
+	}
+	
+	/**
+	 * 获得class loader<br>
+	 * 若当前线程class loader不存在，取当前类的class loader
+	 * 
+	 * @return 类加载器
+	 */
+	public static ClassLoader getClassLoader() {
+		ClassLoader classLoader = getContextClassLoader();
+		if (classLoader == null) {
+			classLoader = ReflectionUtil.class.getClassLoader();
+		}
+		return classLoader;
+	}
+	
+	/**
+	 * @return 当前线程的class loader
+	 */
+	public static ClassLoader getContextClassLoader() {
+		return Thread.currentThread().getContextClassLoader();
 	}
 }

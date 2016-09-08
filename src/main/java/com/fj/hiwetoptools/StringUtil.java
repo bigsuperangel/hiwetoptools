@@ -1,7 +1,10 @@
 package com.fj.hiwetoptools;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,6 +14,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import com.fj.hiwetoptools.codec.EncodeUtil;
+import com.fj.hiwetoptools.system.CharsetUtil;
 
 /**
  * 字符串工具类, 继承org.apache.commons.lang3.StringUtils类
@@ -18,7 +22,7 @@ import com.fj.hiwetoptools.codec.EncodeUtil;
 public class StringUtil extends org.apache.commons.lang3.StringUtils {
 
 	private static final char SEPARATOR = '_';
-	private static final String CHARSET_NAME = "UTF-8";
+	public static final String CRLF = "\r\n";
 
 	/**
 	 * 转换为字节数组
@@ -28,7 +32,7 @@ public class StringUtil extends org.apache.commons.lang3.StringUtils {
 	public static byte[] getBytes(String str){
 		if (str != null){
 			try {
-				return str.getBytes(CHARSET_NAME);
+				return str.getBytes(CharsetUtil.UTF_8);
 			} catch (UnsupportedEncodingException e) {
 				return null;
 			}
@@ -44,7 +48,7 @@ public class StringUtil extends org.apache.commons.lang3.StringUtils {
 	 */
 	public static String toString(byte[] bytes){
 		try {
-			return new String(bytes, CHARSET_NAME);
+			return new String(bytes, CharsetUtil.UTF_8);
 		} catch (UnsupportedEncodingException e) {
 			return EMPTY;
 		}
@@ -405,6 +409,157 @@ public class StringUtil extends org.apache.commons.lang3.StringUtils {
 			template = template.replace("{" + entry.getKey() + "}", entry.getValue().toString());
 		}
 		return template;
+	}
+	
+
+	/**
+	 * 当给定字符串为null时，转换为Empty
+	 * 
+	 * @param str 被转换的字符串
+	 * @return 转换后的字符串
+	 */
+	public static String nullToEmpty(String str) {
+		return nullToDefault(str, EMPTY);
+	}
+	
+	/**
+	 * 如果字符串是<code>null</code>，则返回指定默认字符串，否则返回字符串本身。
+	 * 
+	 * <pre>
+	 * nullToDefault(null, &quot;default&quot;)  = &quot;default&quot;
+	 * nullToDefault(&quot;&quot;, &quot;default&quot;)    = &quot;&quot;
+	 * nullToDefault(&quot;  &quot;, &quot;default&quot;)  = &quot;  &quot;
+	 * nullToDefault(&quot;bat&quot;, &quot;default&quot;) = &quot;bat&quot;
+	 * </pre>
+	 * 
+	 * @param str 要转换的字符串
+	 * @param defaultStr 默认字符串
+	 * 
+	 * @return 字符串本身或指定的默认字符串
+	 */
+	public static String nullToDefault(String str, String defaultStr) {
+		return (str == null) ? defaultStr : str;
+	}
+
+	public static String toEncodedString(byte[] content, String charset) {
+		return toEncodedString(content, CharsetUtil.charset(charset));
+	}
+	
+	/**
+	 * 将对象转为字符串<br>
+	 * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组
+	 * 2、对象数组会调用Arrays.toString方法
+	 * 
+	 * @param obj 对象
+	 * @param charsetName 字符集
+	 * @return 字符串
+	 */
+	public static String str(Object obj, String charsetName){
+		return str(obj, Charset.forName(charsetName));
+	}
+	
+	/**
+	 * 将对象转为字符串<br>
+	 * 1、Byte数组和ByteBuffer会被转换为对应字符串的数组
+	 * 2、对象数组会调用Arrays.toString方法
+	 * 
+	 * @param obj 对象
+	 * @param charset 字符集
+	 * @return 字符串
+	 */
+	public static String str(Object obj, Charset charset){
+		if(null == obj){
+			return null;
+		}
+		
+		if(obj instanceof byte[] || obj instanceof Byte[]){
+			return str((Byte[])obj, charset);
+		}
+		
+		if(obj instanceof ByteBuffer){
+			return str((ByteBuffer)obj, charset);
+		}
+		
+		if(ObjectUtil.isArray(obj)){
+			return Arrays.toString((Object[])obj);
+		}
+		
+		return obj.toString();
+	}
+	
+	/**
+	 * 将byte数组转为字符串
+	 * 
+	 * @param bytes byte数组
+	 * @param charset 字符集
+	 * @return 字符串
+	 */
+	public static String str(byte[] bytes, String charset) {
+		return str(bytes, isBlank(charset) ? Charset.defaultCharset() : Charset.forName(charset));
+	}
+
+	/**
+	 * 解码字节码
+	 * 
+	 * @param data 字符串
+	 * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
+	 * @return 解码后的字符串
+	 */
+	public static String str(byte[] data, Charset charset) {
+		if (data == null) {
+			return null;
+		}
+
+		if (null == charset) {
+			return new String(data);
+		}
+		return new String(data, charset);
+	}
+	
+	/**
+	 * 将编码的byteBuffer数据转换为字符串
+	 * @param data 数据
+	 * @param charset 字符集，如果为空使用当前系统字符集
+	 * @return 字符串
+	 */
+	public static String str(ByteBuffer data, String charset){
+		if(data == null) {
+			return null;
+		}
+		
+		return str(data, Charset.forName(charset));
+	}
+	
+	/**
+	 * 将编码的byteBuffer数据转换为字符串
+	 * @param data 数据
+	 * @param charset 字符集，如果为空使用当前系统字符集
+	 * @return 字符串
+	 */
+	public static String str(ByteBuffer data, Charset charset){
+		if(null == charset) {
+			charset = Charset.defaultCharset();
+		}
+		return charset.decode(data).toString();
+	}
+	
+	/**
+	 * 是否包含空字符串
+	 * 
+	 * @param strs 字符串列表
+	 * @return 是否包含空字符串
+	 */
+	public static boolean hasBlank(String... strs) {
+		if (CollectionUtil.isEmpty(strs)) {
+			return true;
+		}
+
+		for (String str : strs) {
+			if (isBlank(str)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

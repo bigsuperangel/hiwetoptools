@@ -1,60 +1,26 @@
 package com.fj.hiwetoptools;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 
+import com.fj.hiwetoptools.io.IoUtil;
+import com.fj.hiwetoptools.reflect.ReflectionUtil;
+
+
 public class FileUtil extends FileUtils {
 	public static long sizeOfDirectory(File paramFile) {
 		return FileUtils.sizeOfDirectory(paramFile);
-	}
-
-	public static boolean deleteQuietly(File paramFile) {
-		return FileUtils.deleteQuietly(paramFile);
-	}
-
-	public static void deleteDirectory(File paramFile) throws IOException {
-		FileUtils.deleteDirectory(paramFile);
-	}
-
-	public static void copyFileToDirectory(File paramFile1, File paramFile2)
-			throws IOException {
-		FileUtils.copyFileToDirectory(paramFile1, paramFile2);
-	}
-
-	public static void copyFile(File paramFile1, File paramFile2)
-			throws IOException {
-		FileUtils.copyFile(paramFile1, paramFile2);
-	}
-
-	public static void copyFile(String paramString1, String paramString2)
-			throws IOException {
-		File localFile1 = null;
-		File localFile2 = null;
-		localFile2 = new File(paramString2);
-		if ((paramString1.toLowerCase().indexOf("http://") == 0)
-				|| (paramString1.toLowerCase().indexOf("file://") == 0)) {
-			URL localURL = new URL(paramString1);
-			FileUtils.copyURLToFile(localURL, localFile2);
-		} else {
-			localFile1 = new File(paramString1);
-			copyFile(localFile1, localFile2);
-		}
-	}
-
-	public static void copyDirectory(File paramFile1, File paramFile2)
-			throws IOException {
-		FileUtils.copyDirectory(paramFile1, paramFile2);
-	}
-
-	public static void cleanDirectory(File paramFile) throws IOException {
-		FileUtils.cleanDirectory(paramFile);
 	}
 
 	public static String getAndCreateDirectoryPath(String paramString)
@@ -150,5 +116,152 @@ public class FileUtil extends FileUtils {
 		return type + "_" + random + "_" + time + "." + suffix;
 	}
 
+	/**
+	 * 将文件写入流中
+	 * 
+	 * @param file 文件
+	 * @param out 流
+	 * @throws IOException
+	 */
+	public static void writeToStream(File file, OutputStream out) throws IOException {
+		FileInputStream in = null;
+		try {
+			in = new FileInputStream(file);
+			IoUtil.copy(in, out);
+		} finally {
+			IoUtil.close(in);
+		}
+	}
+
+	/**
+	 * 将流的内容写入文件<br>
+	 * 
+	 * @param fullFilePath 文件绝对路径
+	 * @param out 输出流
+	 * @throws IOException
+	 */
+	public static void writeToStream(String fullFilePath, OutputStream out) throws IOException {
+		writeToStream(touch(fullFilePath), out);
+	}
+	
+	/**
+	 * 创建文件，如果这个文件存在，直接返回这个文件
+	 * 
+	 * @param fullFilePath 文件的全路径，使用POSIX风格
+	 * @return 文件，若路径为null，返回null
+	 * @throws IOException
+	 */
+	public static File touch(String fullFilePath) throws IOException {
+		if (fullFilePath == null) {
+			return null;
+		}
+		return touch2(file(fullFilePath));
+	}
+	
+	/**
+	 * 创建文件，如果这个文件存在，直接返回这个文件
+	 * 
+	 * @param file 文件对象
+	 * @return 文件，若路径为null，返回null
+	 * @throws IOException
+	 */
+	public static File touch2(File file) throws IOException {
+		if (null == file) {
+			return null;
+		}
+
+		if (false == file.exists()) {
+			mkParentDirs(file);
+			file.createNewFile();
+		}
+		return file;
+	}
+	
+	/**
+	 * 创建所给文件或目录的父目录
+	 * 
+	 * @param file 文件或目录
+	 * @return 父目录
+	 */
+	public static File mkParentDirs(File file) {
+		final File parentFile = file.getParentFile();
+		if (null != parentFile && false == parentFile.exists()) {
+			parentFile.mkdirs();
+		}
+		return parentFile;
+	}
+	
+	/**
+	 * 创建File对象，自动识别相对或绝对路径，相对路径将自动从ClassPath下寻找
+	 * 
+	 * @param path 文件路径
+	 * @return File
+	 */
+	public static File file(String path) {
+		if (StringUtil.isBlank(path)) {
+			throw new NullPointerException("File path is blank!");
+		}
+		return new File(getAbsolutePath(path));
+	}
+	
+	/**
+	 * 获取绝对路径，相对于classes的根目录<br>
+	 * 如果给定就是绝对路径，则返回原路径，原路径把所有\替换为/
+	 * 
+	 * @param path 相对路径
+	 * @return 绝对路径
+	 */
+	public static String getAbsolutePath(String path) {
+		if (path == null) {
+			path = StringUtil.EMPTY;
+		} else {
+			path = normalize(path);
+
+			if (path.startsWith("/") || path.matches("^[a-zA-Z]:/.*")) {
+				// 给定的路径已经是绝对路径了
+				return path;
+			}
+		}
+
+		// 相对路径
+		ClassLoader classLoader = ReflectionUtil.getClassLoader();
+		URL url = classLoader.getResource(path);
+		String reultPath = url != null ? url.getPath() : ReflectionUtil.getClassLoader().getResource(StringUtil.EMPTY).getPath() + path;
+		return reultPath;
+	}
+	
+	/**
+	 * 修复路径<br>
+	 * 1. 统一用 / <br>
+	 * 2. 多个 / 转换为一个
+	 * 
+	 * @param path 原路径
+	 * @return 修复后的路径
+	 */
+	public static String normalize(String path) {
+		return path.replaceAll("[/\\\\]{1,}", "/");
+	}
+	
+	/**
+	 * 获得一个输出流对象
+	 * 
+	 * @param file 文件
+	 * @return 输出流对象
+	 * @throws IOException
+	 */
+	public static BufferedOutputStream getOutputStream(File file) throws IOException {
+		return new BufferedOutputStream(new FileOutputStream(touch2(file)));
+	}
+
+	/**
+	 * 获得一个输出流对象
+	 * 
+	 * @param path 输出到的文件路径，绝对路径
+	 * @return 输出流对象
+	 * @throws IOException
+	 */
+	public static BufferedOutputStream getOutputStream(String path) throws IOException {
+		return getOutputStream(touch(path));
+	}
 
 }

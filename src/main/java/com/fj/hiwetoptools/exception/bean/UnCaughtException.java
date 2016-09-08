@@ -1,5 +1,8 @@
 package com.fj.hiwetoptools.exception.bean;
 
+import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.exception.ExceptionUtil;
+
 
 
 
@@ -8,18 +11,40 @@ package com.fj.hiwetoptools.exception.bean;
  *
  */
 @SuppressWarnings("serial")
-public class UnCaughtException extends BaseException {
+public class UnCaughtException extends RuntimeException {
 
-	public UnCaughtException(String message, Exception cause) {
+	public UnCaughtException(String message, Throwable cause)
+	{
 		super(message, cause);
 	}
-
-	public UnCaughtException(String message) {
-		super(message);
+	
+	/**
+	 * 可变参数异常
+	 * @param throwable
+	 * @param messageTemplate
+	 * @param params
+	 */
+	public UnCaughtException(Throwable throwable, String messageTemplate, Object... params) {
+		super(StringUtil.format(messageTemplate, params), throwable);
 	}
 
-	public UnCaughtException(Exception cause) {
-		super(cause);
+	public UnCaughtException(String message)
+	{
+		super(message);
+	}
+	
+	/**
+	 * 可变参数异常调用 throw new UnCaughtException("test{}","test")
+	 * @param messageTemplate
+	 * @param params
+	 */
+	public UnCaughtException(String messageTemplate, Object... params) {
+		super(StringUtil.format(messageTemplate, params));
+	}
+
+	public UnCaughtException(Throwable cause)
+	{
+		super(ExceptionUtil.getMessage(cause),cause);
 	}
 
 }

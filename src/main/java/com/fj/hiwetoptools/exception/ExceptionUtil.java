@@ -5,10 +5,21 @@ import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.fj.hiwetoptools.StringUtil;
+
 /**
  * 关于异常的工具类.
  */
 public class ExceptionUtil {
+	/**
+	 * 获得完整消息，包括异常名
+	 * 
+	 * @param e 异常
+	 * @return 完整消息
+	 */
+	public static String getMessage(Throwable e) {
+		return StringUtil.format("{}: {}", e.getClass().getSimpleName(), e.getMessage());
+	}
 
 	/**
 	 * 将CheckedException转换为UncheckedException.
