@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import com.fj.hiwetoptools.exception.bean.FileException;
 import org.apache.commons.io.FileUtils;
 
 import com.fj.hiwetoptools.io.IoUtil;
@@ -62,12 +63,54 @@ public class FileUtil extends FileUtils {
 		return paramString;
 	}
 
+	/**
+	 * 获取文件后缀 jpg
+	 * @param paramString
+	 * @return
+	 */
 	public static String getExtendName(String paramString) {
 		int i = paramString.lastIndexOf(".");
 		if (i == -1) {
 			return "";
 		}
 		return paramString.substring(i + 1);
+	}
+
+	/**
+	 * 获取文件后缀 jpg
+	 * @param file
+	 * @return
+	 */
+	public static String getExtendName(File file) {
+		if(!file.exists()){
+			throw new FileException("文件不存在");
+		}
+		return getExtendName(file.getName());
+	}
+
+	/**
+	 * 获取文件后缀包括.jpg
+	 * @param paramString
+	 * @return
+	 */
+	public static String getExtendNameAddDot(String paramString){
+		int i = paramString.lastIndexOf(".");
+		if (i == -1) {
+			return "";
+		}
+		return paramString.substring(i);
+	}
+
+	/**
+	 * 获取文件后缀包括.jpg
+	 * @param file
+	 * @return
+	 */
+	public static String getExtendNameAddDot(File file){
+		if(!file.exists()){
+			throw new FileException("文件不存在");
+		}
+		return getExtendNameAddDot(file.getName());
 	}
 
 	public static String getFileId(String paramString) {
@@ -114,6 +157,29 @@ public class FileUtil extends FileUtils {
 		long time = System.currentTimeMillis();
 		int random = new RandomGenerator().nextNumber(1000, 9999);
 		return type + "_" + random + "_" + time + "." + suffix;
+	}
+
+	/**
+	 * 通过origin文件构造dest
+	 * @param origin
+	 * @return
+	 */
+	public static String generateFileName(File origin){
+		if(!origin.exists()){
+			throw new FileException("文件不存在");
+		}
+		return generateFileName(origin.getName());
+	}
+
+	/**
+	 * 通过origin文件构造dest
+	 * @param origin
+	 * @return
+	 */
+	public static String generateFileName(String origin){
+		long time = System.currentTimeMillis();
+		int random = new RandomGenerator().nextNumber(1000,9999);
+		return random + "_" + time + getExtendNameAddDot(origin);
 	}
 
 	/**
