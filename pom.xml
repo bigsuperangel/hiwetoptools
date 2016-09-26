@@ -18,7 +18,7 @@
 	<repositories>
 
 		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址. -->
-		<repository>
+<!--		<repository>
 			<id>nexus-repos</id>
 			<name>maven-public</name>
 			<url>http://192.168.0.114:8081/repository/maven-public/</url>
@@ -28,7 +28,7 @@
 			<releases>
 				<enabled>true</enabled>
 			</releases>
-		</repository>
+		</repository>-->
 
 		<repository>
 			<id>oschina-repos</id>
@@ -57,9 +57,9 @@
 	</repositories>
 
 	<!-- 设定插件仓库 -->
-	<pluginRepositories>
+	<!--<pluginRepositories>
 
-		<!-- 如有Nexus私服, 取消注释并指向正确的服务器地址. -->
+		&lt;!&ndash; 如有Nexus私服, 取消注释并指向正确的服务器地址. &ndash;&gt;
 		<pluginRepository>
 			<id>nexus-repos</id>
 			<name>maven-public</name>
@@ -87,13 +87,13 @@
 			<url>http://192.168.0.114:8081/repository/maven-snapshots/</url>
 		</snapshotRepository>
 
-		<!-- 发布releases包到nexus私服 -->
+		&lt;!&ndash; 发布releases包到nexus私服 &ndash;&gt;
 		<repository>
 			<id>nexus-releases</id>
 			<name>maven-releases</name>
 			<url>http://192.168.0.114:8081/repository/maven-releases/</url>
 		</repository>
-	</distributionManagement>
+	</distributionManagement>-->
 
 	<dependencies>
 
@@ -214,6 +214,19 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-		</plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
 	</build>
 </project>
