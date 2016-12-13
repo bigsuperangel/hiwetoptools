@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import com.fj.hiwetoptools.PinyinUtil;
 import com.fj.hiwetoptools.StringUtil;
-import com.fj.hiwetoptools.web.HttpUtil;
 
 public class StringUtilTest {
 	
