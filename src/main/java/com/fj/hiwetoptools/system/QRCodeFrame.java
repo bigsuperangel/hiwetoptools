@@ -12,6 +12,7 @@ import java.awt.*;
  * window弹出图片
  */
 public class QRCodeFrame extends JFrame{
+
     private JPanel contentPane;
     private static final Logger logger = LoggerFactory.getLogger(QRCodeFrame.class);
 
