@@ -3,9 +3,7 @@ package com.fj.hiwetoptools.http;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.ProtocolException;
-import java.net.URL;
+import java.net.*;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -41,6 +39,7 @@ public class HttpConnection {
 	/** method请求方法 */
 	private Method method;
 	private HttpURLConnection conn;
+    private Proxy proxy;
 
 	/**
 	 * 创建HttpConnection
@@ -130,7 +129,10 @@ public class HttpConnection {
 		this.method = ObjectUtil.isNull(method) ? Method.GET : method;
 
 		try {
-			this.conn = HttpUtil.isHttps(urlStr) ? openHttps(hostnameVerifier, ssf) : openHttp();
+            if (ObjectUtil.isNotNull(this.proxy)){
+                this.conn = HttpUtil.isHttps(urlStr) ? openProxyHttps(hostnameVerifier, ssf) : openProxyHttp();
+            }else
+			    this.conn = HttpUtil.isHttps(urlStr) ? openHttps(hostnameVerifier, ssf) : openHttp();
 		} catch (Exception e) {
 			throw new HttpException(e.getMessage(), e);
 		}
@@ -372,7 +374,12 @@ public class HttpConnection {
 		return this;
 	}
 
-	/**
+    public HttpConnection setProxy(String proxyIp,int proxyPort) {
+        this.proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyIp, proxyPort));
+        return this;
+    }
+
+    /**
 	 * 采用流方式上传数据，无需本地缓存数据。<br>
 	 * HttpUrlConnection默认是将所有数据读到本地缓存，然后再发送给服务器，这样上传大文件时就会导致内存溢出。
 	 * 
@@ -492,6 +499,15 @@ public class HttpConnection {
 		return (HttpURLConnection) url.openConnection();
 	}
 
+    /**
+     * 初始化代理http请求参数
+     * @return
+     * @throws IOException
+     */
+	private HttpURLConnection openProxyHttp() throws IOException {
+		return (HttpURLConnection) url.openConnection(this.proxy);
+	}
+
 	/**
 	 * 初始化https请求参数
 	 * @param hostnameVerifier 域名验证器
@@ -499,6 +515,25 @@ public class HttpConnection {
 	 */
 	private HttpsURLConnection openHttps(HostnameVerifier hostnameVerifier, SSLSocketFactory ssf) throws IOException, NoSuchAlgorithmException, KeyManagementException {
 		final HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+
+		// 验证域
+		httpsURLConnection.setHostnameVerifier(null != hostnameVerifier ? hostnameVerifier : new TrustAnyHostnameVerifier());
+		httpsURLConnection.setSSLSocketFactory(null != ssf ? ssf : SSLSocketFactoryBuilder.create().build());
+
+		return httpsURLConnection;
+	}
+
+    /**
+     *  初始化代理https请求参数
+     * @param hostnameVerifier
+     * @param ssf
+     * @return
+     * @throws IOException
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     */
+	private HttpsURLConnection openProxyHttps(HostnameVerifier hostnameVerifier, SSLSocketFactory ssf) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+		final HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection(this.proxy);
 
 		// 验证域
 		httpsURLConnection.setHostnameVerifier(null != hostnameVerifier ? hostnameVerifier : new TrustAnyHostnameVerifier());
