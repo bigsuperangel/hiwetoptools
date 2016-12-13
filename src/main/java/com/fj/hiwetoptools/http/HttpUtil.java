@@ -1,34 +1,21 @@
 package com.fj.hiwetoptools.http;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Pattern;
-
 import com.fj.hiwetoptools.CollectionUtil;
-import com.fj.hiwetoptools.FileUtil;
+import com.fj.hiwetoptools.io.FileUtil;
 import com.fj.hiwetoptools.ReUtil;
-import com.fj.hiwetoptools.StringUtil;
-import com.fj.hiwetoptools.exception.bean.HttpException;
-import com.fj.hiwetoptools.exception.bean.UtilException;
+import com.fj.hiwetoptools.StrUtil;
+import com.fj.hiwetoptools.io.FastByteArrayOutputStream;
 import com.fj.hiwetoptools.io.IoUtil;
 import com.fj.hiwetoptools.io.StreamProgress;
+import com.fj.hiwetoptools.lang.Convert;
 import com.fj.hiwetoptools.system.CharsetUtil;
+
+import java.io.*;
+import java.net.*;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 /**
  * Http请求工具类
@@ -58,13 +45,13 @@ public class HttpUtil {
 	 * @return 编码后的字符
 	 */
 	public static String encode(String content, String charsetStr) {
-		if (StringUtil.isBlank(content)) return content;
+		if (StrUtil.isBlank(content)) return content;
 
 		String encodeContent = null;
 		try {
 			encodeContent = URLEncoder.encode(content, charsetStr);
 		} catch (UnsupportedEncodingException e) {
-			throw new UtilException(StringUtil.format("Unsupported encoding: [{}]", charsetStr), e);
+			throw new HttpException(StrUtil.format("Unsupported encoding: [{}]", charsetStr), e);
 		}
 		return encodeContent;
 	}
@@ -88,12 +75,12 @@ public class HttpUtil {
 	 * @return 编码后的字符
 	 */
 	public static String decode(String content, String charsetStr) {
-		if (StringUtil.isBlank(content)) return content;
+		if (StrUtil.isBlank(content)) return content;
 		String encodeContnt = null;
 		try {
 			encodeContnt = URLDecoder.decode(content, charsetStr);
 		} catch (UnsupportedEncodingException e) {
-			throw new UtilException(StringUtil.format("Unsupported encoding: [{}]", charsetStr), e);
+			throw new HttpException(StrUtil.format("Unsupported encoding: [{}]", charsetStr), e);
 		}
 		return encodeContnt;
 	}
@@ -114,7 +101,7 @@ public class HttpUtil {
 	public static String getClientIP(javax.servlet.http.HttpServletRequest request, String... otherHeaderNames) {
 		String[] headers = new String[]{"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP"};
 		if(CollectionUtil.isNotEmpty(otherHeaderNames)){
-			headers = CollectionUtil.addAll(headers, headers);
+			headers = CollectionUtil.addAll(headers, otherHeaderNames);
 		}
 		
 		String ip;
@@ -162,6 +149,18 @@ public class HttpUtil {
 	}
 	
 	/**
+	 * 发送get请求
+	 * 
+	 * @param urlString 网址
+	 * @param paramMap post表单数据
+	 * @return 返回数据
+	 * @throws IOException
+	 */
+	public static String get(String urlString, Map<String, Object> paramMap) {
+		return HttpRequest.get(urlString).form(paramMap).execute().body();
+	}
+	
+	/**
 	 * 发送post请求
 	 * 
 	 * @param urlString 网址
@@ -184,29 +183,49 @@ public class HttpUtil {
 	public static String post(String urlString, String params) {
 		return HttpRequest.post(urlString).body(params).execute().body();
 	}
+	
+	//---------------------------------------------------------------------------------------- download
+	/**
+	 * 下载远程文本
+	 * 
+	 * @param url 请求的url
+	 * @param customCharsetName 自定义的字符集
+	 * @return 文本
+	 * @throws IOException
+	 */
+	public static String downloadString(String url, String customCharsetName) {
+		return downloadString(url, CharsetUtil.charset(customCharsetName), null);
+	}
+	
+	/**
+	 * 下载远程文本
+	 * 
+	 * @param url 请求的url
+	 * @param customCharset 自定义的字符集，可以使用{@link CharsetUtil#charset} 方法转换
+	 * @return 文本
+	 * @throws IOException
+	 */
+	public static String downloadString(String url, Charset customCharset) {
+		return downloadString(url, customCharset, null);
+	}
 
 	/**
 	 * 下载远程文本
 	 * 
 	 * @param url 请求的url
-	 * @param customCharset 自定义的字符集
+	 * @param customCharset 自定义的字符集，可以使用{@link CharsetUtil#charset} 方法转换
+	 * @param streamPress 进度条 {@link StreamProgress}
 	 * @return 文本
 	 * @throws IOException
 	 */
-	public static String downloadString(String url, String customCharset) {
-		if(StringUtil.isBlank(url)){
+	public static String downloadString(String url, Charset customCharset, StreamProgress streamPress) {
+		if(StrUtil.isBlank(url)){
 			throw new NullPointerException("[url] is null!");
 		}
 		
-		InputStream in = null;
-		try {
-			in = new URL(url).openStream();
-			return IoUtil.read(in, customCharset);
-		}catch(IOException e){
-			throw new HttpException(e);
-		}finally {
-			IoUtil.close(in);
-		}
+		FastByteArrayOutputStream out = new FastByteArrayOutputStream();
+		download(url, out, true, null);
+		return null == customCharset ? out.toString() : out.toString(customCharset);
 	}
 	
 	/**
@@ -231,45 +250,94 @@ public class HttpUtil {
 	 * @throws IOException
 	 */
 	public static long downloadFile(String url, File destFile, StreamProgress streamProgress) {
-		if(StringUtil.isBlank(url)){
+		if(StrUtil.isBlank(url)){
 			throw new NullPointerException("[url] is null!");
 		}
 		if(null == destFile){
 			throw new NullPointerException("[destFile] is null!");
 		}
 		if(destFile.isDirectory()){
-			String fileName = StringUtil.substring(url, url.lastIndexOf('/') + 1);
-			if(StringUtil.isBlank(fileName)){
+			String fileName = StrUtil.subSuf(url, url.lastIndexOf('/') + 1);
+			if(StrUtil.isBlank(fileName)){
 				fileName = HttpUtil.encode(url, CharsetUtil.CHARSET_UTF_8);
 			}
-			destFile = FileUtil.getFile(destFile, fileName);
+			destFile = new File(destFile, fileName);
+		}
+		
+		OutputStream out = null;
+		try {
+			out = FileUtil.getOutputStream(destFile);
+			return download(url, out, true, streamProgress);
+		}catch(IOException e){
+			throw new HttpException(e);
+		}
+	}
+	
+	/**
+	 * 下载远程文件
+	 * 
+	 * @param url 请求的url
+	 * @param out 将下载内容写到输出流中 {@link OutputStream}
+	 * @param isCloseOut 是否关闭输出流
+	 * @return 文件大小
+	 * @throws IOException
+	 */
+	public static long download(String url, OutputStream out, boolean isCloseOut) {
+		return download(url, out, isCloseOut, null);
+	}
+	
+	/**
+	 * 下载远程文件
+	 * 
+	 * @param url 请求的url
+	 * @param out 将下载内容写到输出流中 {@link OutputStream}
+	 * @param isCloseOut 是否关闭输出流
+	 * @param streamProgress 进度条
+	 * @return 文件大小
+	 * @throws IOException
+	 */
+	public static long download(String url, OutputStream out, boolean isCloseOut, StreamProgress streamProgress) {
+		if(StrUtil.isBlank(url)){
+			throw new NullPointerException("[url] is null!");
+		}
+		if(null == out){
+			throw new NullPointerException("[out] is null!");
 		}
 		
 		InputStream in = null;
-		OutputStream out = null;
 		try {
 			in = new URL(url).openStream();
-			out = FileUtil.getOutputStream(destFile);
 			return IoUtil.copy(in, out, IoUtil.DEFAULT_BUFFER_SIZE, streamProgress);
 		}catch(IOException e){
 			throw new HttpException(e);
 		}finally {
 			IoUtil.close(in);
-			IoUtil.close(out);
+			if(isCloseOut){
+				IoUtil.close(out);
+			}
 		}
 	}
 
 	/**
-	 * 将Map形式的Form表单数据转换为Url参数形式
+	 * 将Map形式的Form表单数据转换为Url参数形式，不做编码
 	 * 
 	 * @param paramMap 表单数据
 	 * @return url参数
 	 */
 	public static String toParams(Map<String, Object> paramMap) {
-		if(CollectionUtil.isEmpty(paramMap)){
-			return StringUtil.EMPTY;
-		}
-		return CollectionUtil.join(paramMap.entrySet(), "&");
+		return toParams(paramMap, CharsetUtil.CHARSET_UTF_8);
+	}
+	
+	/**
+	 * 将Map形式的Form表单数据转换为Url参数形式<br>
+	 * 编码键和值对
+	 * 
+	 * @param paramMap 表单数据
+	 * @param charsetName 编码
+	 * @return url参数
+	 */
+	public static String toParams(Map<String, Object> paramMap, String charsetName) {
+		return toParams(paramMap, CharsetUtil.charset(charsetName));
 	}
 	
 	/**
@@ -280,9 +348,12 @@ public class HttpUtil {
 	 * @param charset 编码
 	 * @return url参数
 	 */
-	public static String toParams(Map<String, Object> paramMap, String charset) {
+	public static String toParams(Map<String, Object> paramMap, Charset charset) {
 		if(CollectionUtil.isEmpty(paramMap)){
-			return StringUtil.EMPTY;
+			return StrUtil.EMPTY;
+		}
+		if(null == charset){//默认编码为系统编码
+			charset = CharsetUtil.CHARSET_UTF_8;
 		}
 		
 		StringBuilder sb = new StringBuilder();
@@ -293,7 +364,7 @@ public class HttpUtil {
 			} else {
 				sb.append("&");
 			}
-			sb.append(encode(item.getKey(), charset)).append("=").append(encode(item.getValue().toString(), charset));
+			sb.append(encode(item.getKey(), charset)).append("=").append(encode(Convert.toStr(item.getValue()), charset));
 		}
 		return sb.toString();
 	}
@@ -305,14 +376,14 @@ public class HttpUtil {
 	 * @return 参数Map
 	 */
 	public static Map<String, List<String>> decodeParams(String paramsStr, String charset) {
-		if (StringUtil.isBlank(paramsStr)) {
+		if (StrUtil.isBlank(paramsStr)) {
 			return Collections.emptyMap();
 		}
 
 		// 去掉Path部分
 		int pathEndPos = paramsStr.indexOf('?');
 		if (pathEndPos > 0) {
-			paramsStr = StringUtil.substring(paramsStr, pathEndPos + 1);
+			paramsStr = StrUtil.subSuf(paramsStr, pathEndPos + 1);
 		}
 		paramsStr = decode(paramsStr, charset);
 
@@ -331,7 +402,7 @@ public class HttpUtil {
 			} else if (c == '&' || c == ';') { // 参数对的分界点
 				if (name == null && pos != i) {
 					// 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
-					addParam(params, paramsStr.substring(pos, i), StringUtil.EMPTY);
+					addParam(params, paramsStr.substring(pos, i), StrUtil.EMPTY);
 				} else if (name != null) {
 					addParam(params, name, paramsStr.substring(pos, i));
 					name = null;
@@ -342,12 +413,12 @@ public class HttpUtil {
 
 		if (pos != i) {
 			if (name == null) {
-				addParam(params, paramsStr.substring(pos, i), StringUtil.EMPTY);
+				addParam(params, paramsStr.substring(pos, i), StrUtil.EMPTY);
 			} else {
 				addParam(params, name, paramsStr.substring(pos, i));
 			}
 		} else if (name != null) {
-			addParam(params, name, StringUtil.EMPTY);
+			addParam(params, name, StrUtil.EMPTY);
 		}
 
 		return params;
@@ -360,7 +431,7 @@ public class HttpUtil {
 	 * @return 合成后的URL
 	 */
 	public static String urlWithForm(String url, Map<String, Object> form) {
-		final String queryString = toParams(form);
+		final String queryString = toParams(form, CharsetUtil.UTF_8);
 		return urlWithForm(url, queryString);
 	}
 	
@@ -371,7 +442,7 @@ public class HttpUtil {
 	 * @return 拼接后的字符串
 	 */
 	public static String urlWithForm(String url, String queryString) {
-		if(StringUtil.isNotBlank(queryString)){
+		if(StrUtil.isNotBlank(queryString)){
 			if(url.contains("?")) {
 				//原URL已经带参数
 				url += "&" + queryString;
@@ -424,7 +495,7 @@ public class HttpUtil {
 	 * @return 是否未知
 	 */
 	public static boolean isUnknow(String checkString) {
-		return StringUtil.isBlank(checkString) || "unknown".equalsIgnoreCase(checkString);
+		return StrUtil.isBlank(checkString) || "unknown".equalsIgnoreCase(checkString);
 	}
 	
 	/**
@@ -437,7 +508,7 @@ public class HttpUtil {
 	 */
 	@SuppressWarnings("resource")
 	public static String getString(InputStream in, String charset, boolean isGetCharsetFromContent) throws IOException {
-		if(StringUtil.isBlank(charset)){
+		if(StrUtil.isBlank(charset)){
 			charset  = CharsetUtil.UTF_8;
 		}
 		if(false == isGetCharsetFromContent){
@@ -450,10 +521,10 @@ public class HttpUtil {
 		BufferedReader reader = IoUtil.getReader(in, charset);
 		String line = null;
 		while ((line = reader.readLine()) != null) {
-			content.append(line).append(StringUtil.LF);
+			content.append(line).append(StrUtil.LF);
 			if(isGetCharsetFromContent){
 				String charsetInContent = ReUtil.get(CHARSET_PATTERN, line, 1);
-				if (StringUtil.isNotBlank(charsetInContent)) {
+				if (StrUtil.isNotBlank(charsetInContent)) {
 					charset = charsetInContent;
 					reader = IoUtil.getReader(in, charset);
 					isGetCharsetFromContent = false;

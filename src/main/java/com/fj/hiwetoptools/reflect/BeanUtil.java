@@ -46,7 +46,6 @@ public class BeanUtil {
 	/**
 	 * 从BAEN中取出所需的属性
 	 * @param list
-	 * @param needFileds
 	 * @return
 	 */
 	public static List<Map<String, Object>> getListFromBean(List<?> list,String[] needFields){

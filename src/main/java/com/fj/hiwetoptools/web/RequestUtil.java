@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.fj.hiwetoptools.GsonUtil;
-import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.StrUtil;
 
 /**
  * 请求工具类
@@ -36,9 +36,9 @@ public class RequestUtil {
 		} catch (UnsupportedEncodingException localUnsupportedEncodingException) {
 		}
 		String ip = request.getHeader("X-Forwarder-For");
-		if ((StringUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip))) {
+		if ((StrUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip))) {
 			ip = request.getHeader("Proxy-Client-Ip");
-			if ((StringUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip)))
+			if ((StrUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip)))
 				ip = request.getHeader("WL-Proxy-Client-Ip");
 		} else {
 			String[] ipArr = ip.split(",");
@@ -49,7 +49,7 @@ public class RequestUtil {
 				}
 			}
 		}
-		if ((StringUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip))) {
+		if ((StrUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip))) {
 			ip = request.getRemoteAddr();
 		}
 		if (("0:0:0:0:0:0:0:1".equals(ip)) || ("localhost".equals(ip))

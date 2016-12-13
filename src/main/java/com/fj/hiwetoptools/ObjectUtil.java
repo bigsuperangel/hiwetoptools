@@ -87,8 +87,6 @@ public class ObjectUtil {
 	 * 字符串转对象.
 	 *
 	 * @param str
-	 * @param c
-	 * @return
 	 * @author qingwu
 	 * @date 2014-1-16 下午6:49:33
 	 */
@@ -111,6 +109,51 @@ public class ObjectUtil {
 		}
 		return str;
 	}
+
+	/**
+     * 计算对象长度，如果是字符串调用其length函数，集合类调用其size函数，数组调用其length属性，其他可遍历对象遍历计算长度
+	 *
+     * @param obj 被计算长度的对象
+	 * @return 长度
+	 */
+    public static int length(Object obj) {
+        if (obj == null) {
+            return 0;
+        }
+        if (obj instanceof CharSequence) {
+            return ((CharSequence) obj).length();
+        }
+        if (obj instanceof Collection) {
+            return ((Collection<?>) obj).size();
+        }
+        if (obj instanceof Map) {
+            return ((Map<?, ?>) obj).size();
+        }
+
+        int count;
+        if (obj instanceof Iterator) {
+            Iterator<?> iter = (Iterator<?>) obj;
+            count = 0;
+            while (iter.hasNext()) {
+                count++;
+                iter.next();
+            }
+            return count;
+        }
+        if (obj instanceof Enumeration) {
+            Enumeration<?> enumeration = (Enumeration<?>) obj;
+            count = 0;
+            while (enumeration.hasMoreElements()) {
+                count++;
+                enumeration.nextElement();
+            }
+            return count;
+        }
+        if (obj.getClass().isArray() == true) {
+            return Array.getLength(obj);
+        }
+        return -1;
+    }
 
 	/**
 	 * One of the following conditions isEmpty = true, else = false :
@@ -171,7 +214,6 @@ public class ObjectUtil {
 	/**
 	 * 对象是否是值类型.
 	 *
-	 * @param obj
 	 * @return
 	 * @author qingwu
 	 * @date 2013-7-9 下午03:01:44
@@ -204,7 +246,6 @@ public class ObjectUtil {
 	/**
 	 * 对象是否是值类型.
 	 *
-	 * @param obj
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
@@ -231,7 +272,6 @@ public class ObjectUtil {
 	/**
 	 * 对象是否是值类型.
 	 *
-	 * @param obj
 	 */
 	public static boolean isValueType(Object object) {
 		return object instanceof Byte || 

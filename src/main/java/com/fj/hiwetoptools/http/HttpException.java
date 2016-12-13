@@ -1,12 +1,13 @@
-package com.fj.hiwetoptools.exception.bean;
+package com.fj.hiwetoptools.http;
+
 
 import com.fj.hiwetoptools.StrUtil;
 
 /**
  *HTTP异常
+ * @author xiaoleilu
  */
 public class HttpException extends RuntimeException{
-	private static final long serialVersionUID = 8247610319171014183L;
 
 	public HttpException(Throwable e) {
 		super(e.getMessage(), e);

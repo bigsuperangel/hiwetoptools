@@ -1,21 +1,14 @@
 package com.fj.hiwetoptools.http;
 
-import java.io.ByteArrayInputStream;
-import java.io.EOFException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
+import com.fj.hiwetoptools.StrUtil;
+import com.fj.hiwetoptools.io.FastByteArrayOutputStream;
+import com.fj.hiwetoptools.io.IoUtil;
+import com.fj.hiwetoptools.lang.Convert;
+
+import java.io.*;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
-
-import com.fj.hiwetoptools.StringUtil;
-import com.fj.hiwetoptools.exception.bean.HttpException;
-import com.fj.hiwetoptools.io.FastByteArrayOutputStream;
-import com.fj.hiwetoptools.io.IoUtil;
-import com.fj.hiwetoptools.lang.Conver;
-
 
 /**
  * Http响应类
@@ -43,7 +36,7 @@ public class HttpResponse extends HttpBase<HttpResponse> {
 			httpResponse.charset = httpConnection.charset();
 			
 			InputStream in;
-			if(httpResponse.status < HttpURLConnection.HTTP_BAD_REQUEST){
+			if(httpResponse.status < HttpStatus.HTTP_BAD_REQUEST){
 				in = httpConnection.getInputStream();
 			}else{
 				in = httpConnection.getErrorStream();
@@ -129,13 +122,13 @@ public class HttpResponse extends HttpBase<HttpResponse> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Request Headers: ").append(StringUtil.CRLF);
+		sb.append("Request Headers: ").append(StrUtil.CRLF);
 		for (Entry<String, List<String>> entry : this.headers.entrySet()) {
-			sb.append("    ").append(entry).append(StringUtil.CRLF);
+			sb.append("    ").append(entry).append(StrUtil.CRLF);
 		}
 		
-		sb.append("Request Body: ").append(StringUtil.CRLF);
-		sb.append("    ").append(this.body()).append(StringUtil.CRLF);
+		sb.append("Request Body: ").append(StrUtil.CRLF);
+		sb.append("    ").append(this.body()).append(StrUtil.CRLF);
 		
 		return sb.toString();
 	}
@@ -152,7 +145,7 @@ public class HttpResponse extends HttpBase<HttpResponse> {
 			in = new GZIPInputStream(in);
 		}
 		
-		int contentLength  = Conver.toInt(header(Header.CONTENT_LENGTH), 0);
+		int contentLength  = Convert.toInt(header(Header.CONTENT_LENGTH), 0);
 		this.out = contentLength > 0 ? new FastByteArrayOutputStream(contentLength) : new FastByteArrayOutputStream();
 		try {
 			IoUtil.copy(in, this.out);

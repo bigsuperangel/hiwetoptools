@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import com.fj.hiwetoptools.CollectionUtil;
-import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.StrUtil;
 
 /**
  * 断言<br>
@@ -115,10 +115,10 @@ public class Assert {
 	 * 
 	 * @param text the String to check
 	 * @param message the exception message to use if the assertion fails
-	 * @see StringUtil#isNotEmpty
+	 * @see StrUtil#isNotEmpty
 	 */
 	public static void notEmpty(String text, String message) {
-		if (StringUtil.isEmpty(text)) {
+		if (StrUtil.isEmpty(text)) {
 			throw new IllegalArgumentException(message);
 		}
 	}
@@ -131,7 +131,7 @@ public class Assert {
 	 * </pre>
 	 * 
 	 * @param text the String to check
-	 * @see StringUtil#isNotEmpty
+	 * @see StrUtil#isNotEmpty
 	 */
 	public static void notEmpty(String text) {
 		notEmpty(text, "[Assertion failed] - this String argument must have length; it must not be null or empty");
@@ -146,10 +146,10 @@ public class Assert {
 	 * 
 	 * @param text the String to check
 	 * @param message the exception message to use if the assertion fails
-	 * @see StringUtil#isNotBlank
+	 * @see StrUtil#isNotBlank
 	 */
 	public static void notBlank(String text, String message) {
-		if (StringUtil.isBlank(text)) {
+		if (StrUtil.isBlank(text)) {
 			throw new IllegalArgumentException(message);
 		}
 	}
@@ -162,7 +162,7 @@ public class Assert {
 	 * </pre>
 	 * 
 	 * @param text the String to check
-	 * @see StringUtil#isNotBlank
+	 * @see StrUtil#isNotBlank
 	 */
 	public static void notBlank(String text) {
 		notBlank(text, "[Assertion failed] - this String argument must have text; it must not be null, empty, or blank");
@@ -180,7 +180,7 @@ public class Assert {
 	 * @param message the exception message to use if the assertion fails
 	 */
 	public static void notContain(String textToSearch, String substring, String message) {
-		if (StringUtil.isNotEmpty(textToSearch) && StringUtil.isNotEmpty(substring) && textToSearch.contains(substring)) {
+		if (StrUtil.isNotEmpty(textToSearch) && StrUtil.isNotEmpty(substring) && textToSearch.contains(substring)) {
 			throw new IllegalArgumentException(message);
 		}
 	}
@@ -361,7 +361,7 @@ public class Assert {
 		notNull(type, "Type to check against must not be null");
 		if (!type.isInstance(obj)) {
 			throw new IllegalArgumentException(
-					(StringUtil.isNotEmpty(message) ? message + " " : "") + "Object of class [" + (obj != null ? obj.getClass().getName() : "null") + "] must be an instance of " + type);
+					(StrUtil.isNotEmpty(message) ? message + " " : "") + "Object of class [" + (obj != null ? obj.getClass().getName() : "null") + "] must be an instance of " + type);
 		}
 	}
 

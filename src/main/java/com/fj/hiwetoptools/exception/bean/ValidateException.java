@@ -1,6 +1,6 @@
 package com.fj.hiwetoptools.exception.bean;
 
-import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.StrUtil;
 import com.fj.hiwetoptools.exception.ExceptionUtil;
 
 public class ValidateException extends RuntimeException
@@ -22,7 +22,7 @@ public class ValidateException extends RuntimeException
 	 * @param params
 	 */
 	public ValidateException(Throwable throwable, String messageTemplate, Object... params) {
-		super(StringUtil.format(messageTemplate, params), throwable);
+		super(StrUtil.format(messageTemplate, params), throwable);
 	}
 
 	public ValidateException(String message)
@@ -36,7 +36,7 @@ public class ValidateException extends RuntimeException
 	 * @param params
 	 */
 	public ValidateException(String messageTemplate, Object... params) {
-		super(StringUtil.format(messageTemplate, params));
+		super(StrUtil.format(messageTemplate, params));
 	}
 
 	public ValidateException(Throwable cause)

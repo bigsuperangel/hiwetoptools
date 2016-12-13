@@ -1,8 +1,7 @@
 package com.fj.hiwetop;
 
-import com.fj.hiwetoptools.FileUtil;
+import com.fj.hiwetoptools.io.FileUtil;
 import com.fj.hiwetoptools.ImgUtil;
-import org.junit.Test;
 
 import java.io.File;
 

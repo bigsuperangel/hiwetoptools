@@ -1,4 +1,4 @@
-package com.fj.hiwetoptools;
+package com.fj.hiwetoptools.io;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -12,6 +12,8 @@ import java.net.URL;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import com.fj.hiwetoptools.RandomUtil;
+import com.fj.hiwetoptools.StrUtil;
 import com.fj.hiwetoptools.exception.bean.FileException;
 import org.apache.commons.io.FileUtils;
 
@@ -155,7 +157,7 @@ public class FileUtil extends FileUtils {
 	 */
 	public static String generateFileName(int type, String suffix) {
 		long time = System.currentTimeMillis();
-		int random = new RandomGenerator().nextNumber(1000, 9999);
+		int random = RandomUtil.randomInt(1000, 9999);
 		return type + "_" + random + "_" + time + "." + suffix;
 	}
 
@@ -178,7 +180,7 @@ public class FileUtil extends FileUtils {
 	 */
 	public static String generateFileName(String origin){
 		long time = System.currentTimeMillis();
-		int random = new RandomGenerator().nextNumber(1000,9999);
+		int random = RandomUtil.randomInt(1000,9999);
 		return random + "_" + time + getExtendNameAddDot(origin);
 	}
 
@@ -264,7 +266,7 @@ public class FileUtil extends FileUtils {
 	 * @return File
 	 */
 	public static File file(String path) {
-		if (StringUtil.isBlank(path)) {
+		if (StrUtil.isBlank(path)) {
 			throw new NullPointerException("File path is blank!");
 		}
 		return new File(getAbsolutePath(path));
@@ -279,7 +281,7 @@ public class FileUtil extends FileUtils {
 	 */
 	public static String getAbsolutePath(String path) {
 		if (path == null) {
-			path = StringUtil.EMPTY;
+			path = StrUtil.EMPTY;
 		} else {
 			path = normalize(path);
 
@@ -292,7 +294,7 @@ public class FileUtil extends FileUtils {
 		// 相对路径
 		ClassLoader classLoader = ReflectionUtil.getClassLoader();
 		URL url = classLoader.getResource(path);
-		String reultPath = url != null ? url.getPath() : ReflectionUtil.getClassLoader().getResource(StringUtil.EMPTY).getPath() + path;
+		String reultPath = url != null ? url.getPath() : ReflectionUtil.getClassLoader().getResource(StrUtil.EMPTY).getPath() + path;
 		return reultPath;
 	}
 	

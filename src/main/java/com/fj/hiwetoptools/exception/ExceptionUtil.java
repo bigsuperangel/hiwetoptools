@@ -5,7 +5,7 @@ import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.StrUtil;
 
 /**
  * 关于异常的工具类.
@@ -18,7 +18,7 @@ public class ExceptionUtil {
 	 * @return 完整消息
 	 */
 	public static String getMessage(Throwable e) {
-		return StringUtil.format("{}: {}", e.getClass().getSimpleName(), e.getMessage());
+		return StrUtil.format("{}: {}", e.getClass().getSimpleName(), e.getMessage());
 	}
 
 	/**

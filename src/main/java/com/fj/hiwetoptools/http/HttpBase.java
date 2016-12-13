@@ -1,18 +1,17 @@
 package com.fj.hiwetoptools.http;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.fj.hiwetoptools.CollectionUtil;
-import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.StrUtil;
 import com.fj.hiwetoptools.system.CharsetUtil;
+
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * http基类
+ * @author Looly
+ * @param <T>
  */
 @SuppressWarnings("unchecked")
 public abstract class HttpBase<T> {
@@ -38,7 +37,7 @@ public abstract class HttpBase<T> {
 	 * @return Header值
 	 */
 	public String header(String name) {
-		if(StringUtil.isBlank(name)) {
+		if(StrUtil.isBlank(name)) {
 			return null;
 		}
 		
@@ -147,7 +146,7 @@ public abstract class HttpBase<T> {
 		for (Entry<String, List<String>> entry : headers.entrySet()) {
 			name = entry.getKey();
 			for (String value : entry.getValue()) {
-				this.header(name, StringUtil.nullToEmpty(value), false);
+				this.header(name, StrUtil.nullToEmpty(value), false);
 			}
 		}
 	}
@@ -185,14 +184,27 @@ public abstract class HttpBase<T> {
 	public String charset() {
 		return charset;
 	}
+	
 	/**
 	 * 设置字符集
 	 * @param charset 字符集
 	 * @return T 自己
 	 */
 	public T charset(String charset) {
-		if(StringUtil.isNotBlank(charset)){
+		if(StrUtil.isNotBlank(charset)){
 			this.charset = charset;
+		}
+		return (T) this;
+	}
+	
+	/**
+	 * 设置字符集
+	 * @param charset 字符集
+	 * @return T 自己
+	 */
+	public T charset(Charset charset) {
+		if(null != charset){
+			this.charset = charset.name();
 		}
 		return (T) this;
 	}
@@ -200,13 +212,13 @@ public abstract class HttpBase<T> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Request Headers: ").append(StringUtil.CRLF);
+		sb.append("Request Headers: ").append(StrUtil.CRLF);
 		for (Entry<String, List<String>> entry : this.headers.entrySet()) {
-			sb.append("    ").append(entry).append(StringUtil.CRLF);
+			sb.append("    ").append(entry).append(StrUtil.CRLF);
 		}
 		
-		sb.append("Request Body: ").append(StringUtil.CRLF);
-		sb.append("    ").append(this.body).append(StringUtil.CRLF);
+		sb.append("Request Body: ").append(StrUtil.CRLF);
+		sb.append("    ").append(this.body).append(StrUtil.CRLF);
 		
 		return sb.toString();
 	}

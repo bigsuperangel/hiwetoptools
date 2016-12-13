@@ -1,6 +1,6 @@
 package com.fj.hiwetoptools.exception.bean;
 
-import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.StrUtil;
 import com.fj.hiwetoptools.exception.ExceptionUtil;
 
 
@@ -19,7 +19,7 @@ public class UtilException extends RuntimeException{
 	}
 	
 	public UtilException(String messageTemplate, Object... params) {
-		super(StringUtil.format(messageTemplate, params));
+		super(StrUtil.format(messageTemplate, params));
 	}
 	
 	public UtilException(String message, Throwable throwable) {
@@ -27,6 +27,6 @@ public class UtilException extends RuntimeException{
 	}
 	
 	public UtilException(Throwable throwable, String messageTemplate, Object... params) {
-		super(StringUtil.format(messageTemplate, params), throwable);
+		super(StrUtil.format(messageTemplate, params), throwable);
 	}
 }

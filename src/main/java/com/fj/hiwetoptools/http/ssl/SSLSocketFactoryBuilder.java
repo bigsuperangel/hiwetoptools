@@ -1,16 +1,15 @@
 package com.fj.hiwetoptools.http.ssl;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import com.fj.hiwetoptools.CollectionUtil;
+import com.fj.hiwetoptools.StrUtil;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
-
-import com.fj.hiwetoptools.CollectionUtil;
-import com.fj.hiwetoptools.StringUtil;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 /**
  * SSLSocketFactory构建器
@@ -55,7 +54,7 @@ public class SSLSocketFactoryBuilder{
 	 * @return 自身
 	 */
 	public SSLSocketFactoryBuilder setProtocol(String protocol){
-		if(StringUtil.isNotBlank(protocol)){
+		if(StrUtil.isNotBlank(protocol)){
 			this.protocol = protocol;
 		}
 		return this;

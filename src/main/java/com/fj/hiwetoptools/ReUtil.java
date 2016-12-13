@@ -122,7 +122,7 @@ public class ReUtil {
 				int group = Integer.parseInt(var);
 				template = template.replace("$" + var, matcher.group(group));
 			}
-			contents[0] = StringUtil.substring(content, matcher.end(), content.length());
+			contents[0] = StrUtil.substring(content, matcher.end(), content.length());
 			return template;
 		}
 		return null;
@@ -202,7 +202,7 @@ public class ReUtil {
 		
 		Matcher matcher = Pattern.compile(regex, Pattern.DOTALL).matcher(content);
 		if (matcher.find()) {
-			return StringUtil.substring(content, matcher.end(), content.length());
+			return StrUtil.substring(content, matcher.end(), content.length());
 		}
 		return content;
 	}
@@ -262,7 +262,7 @@ public class ReUtil {
 			return false;
 		}
 		
-		if(StringUtil.isEmpty(regex)) {
+		if(StrUtil.isEmpty(regex)) {
 			//正则不存在则为全匹配
 			return true;
 		}
@@ -293,7 +293,7 @@ public class ReUtil {
 	 * @return 处理后的文本
 	 */
 	public static String replaceAll(String content, String regex, String replacementTemplate) {
-		if(StringUtil.isEmpty(content)){
+		if(StrUtil.isEmpty(content)){
 			return content;
 		}
 		
@@ -324,7 +324,7 @@ public class ReUtil {
 	 * @return 转义后的文本
 	 */
 	public static String escape(String content) {
-		if(StringUtil.isBlank(content)){
+		if(StrUtil.isBlank(content)){
 			return content;
 		}
 		

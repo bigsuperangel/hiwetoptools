@@ -9,7 +9,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.StrUtil;
 import com.fj.hiwetoptools.exception.bean.UtilException;
 import com.fj.hiwetoptools.reflect.ReflectionUtil;
 
@@ -98,7 +98,7 @@ public class URLUtil {
 	 * @return 格式化后的URL，如果提供了null或者空串，返回null
 	 */
 	public static String formatUrl(String url) {
-		if (StringUtil.isBlank(url)){
+		if (StrUtil.isBlank(url)){
 			return null;
 		}
 		if (url.startsWith("http://") || url.startsWith("https://")){
@@ -117,7 +117,7 @@ public class URLUtil {
 	 */
 	public static String complateUrl(String baseUrl, String relativePath) {
 		baseUrl = formatUrl(baseUrl);
-		if (StringUtil.isBlank(baseUrl)) {
+		if (StrUtil.isBlank(baseUrl)) {
 			return null;
 		}
 

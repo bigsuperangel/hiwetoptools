@@ -3,7 +3,7 @@ package com.fj.hiwetoptools.system;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.StrUtil;
 
 /**
  * 字符集工具类
@@ -34,7 +34,7 @@ public class CharsetUtil {
 	 * @return Charset
 	 */
 	public static Charset charset(String charset){
-		return StringUtil.isBlank(charset) ? Charset.defaultCharset() : Charset.forName(charset);
+		return StrUtil.isBlank(charset) ? Charset.defaultCharset() : Charset.forName(charset);
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public class CharsetUtil {
 			srcCharset = StandardCharsets.UTF_8;
 		}
 		
-		if (StringUtil.isBlank(source) || srcCharset.equals(destCharset)) {
+		if (StrUtil.isBlank(source) || srcCharset.equals(destCharset)) {
 			return source;
 		}
 		return new String(source.getBytes(srcCharset), destCharset);

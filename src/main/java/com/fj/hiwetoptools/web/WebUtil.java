@@ -14,14 +14,13 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fj.hiwetoptools.StrUtil;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.fj.hiwetoptools.GsonUtil;
-import com.fj.hiwetoptools.StringUtil;
 
 public class WebUtil {
 	public static final Logger logger = LoggerFactory.getLogger(WebUtil.class);
@@ -131,9 +130,9 @@ public class WebUtil {
 		} catch (UnsupportedEncodingException localUnsupportedEncodingException) {
 		}
 		String ip = request.getHeader("X-Forwarder-For");
-		if ((StringUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip))) {
+		if ((StrUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip))) {
 			ip = request.getHeader("Proxy-Client-Ip");
-			if ((StringUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip)))
+			if ((StrUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip)))
 				ip = request.getHeader("WL-Proxy-Client-Ip");
 		} else {
 			String[] ipArr = ip.split(",");
@@ -144,7 +143,7 @@ public class WebUtil {
 				}
 			}
 		}
-		if ((StringUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip))) {
+		if ((StrUtil.isBlank(ip)) || ("unknown".equalsIgnoreCase(ip))) {
 			ip = request.getRemoteAddr();
 		}
 		if (("0:0:0:0:0:0:0:1".equals(ip)) || ("localhost".equals(ip))

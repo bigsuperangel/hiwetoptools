@@ -19,10 +19,40 @@ import com.fj.hiwetoptools.system.CharsetUtil;
 /**
  * 字符串工具类, 继承org.apache.commons.lang3.StringUtils类
  */
-public class StringUtil extends org.apache.commons.lang3.StringUtils {
+public class StrUtil extends org.apache.commons.lang3.StringUtils {
 
 	private static final char SEPARATOR = '_';
-	public static final String CRLF = "\r\n";
+    public static final char C_SPACE = ' ';
+    public static final char C_TAB = '	';
+    public static final char C_DOT = '.';
+    public static final char C_SLASH = '/';
+    public static final char C_BACKSLASH = '\\';
+    public static final char C_CR = '\r';
+    public static final char C_LF = '\n';
+    public static final char C_UNDERLINE = '_';
+    public static final char C_COMMA = ',';
+    public static final char C_DELIM_START = '{';
+    public static final char C_DELIM_END = '}';
+
+    public static final String SPACE = " ";
+    public static final String TAB = "	";
+    public static final String DOT = ".";
+    public static final String SLASH = "/";
+    public static final String BACKSLASH = "\\";
+    public static final String EMPTY = "";
+    public static final String CR = "\r";
+    public static final String LF = "\n";
+    public static final String CRLF = "\r\n";
+    public static final String UNDERLINE = "_";
+    public static final String COMMA = ",";
+
+    public static final String HTML_NBSP = "&nbsp;";
+    public static final String HTML_AMP = "&amp";
+    public static final String HTML_QUOTE = "&quot;";
+    public static final String HTML_LT = "&lt;";
+    public static final String HTML_GT = "&gt;";
+
+    public static final String EMPTY_JSON = "{}";
 
 	/**
 	 * 转换为字节数组
@@ -43,7 +73,6 @@ public class StringUtil extends org.apache.commons.lang3.StringUtils {
 
 	/**
 	 * 转换为字节数组
-	 * @param str
 	 * @return
 	 */
 	public static String toString(byte[] bytes){
@@ -561,5 +590,110 @@ public class StringUtil extends org.apache.commons.lang3.StringUtils {
 		}
 		return false;
 	}
+
+    /**
+     * 切割后部分
+     *
+     * @param string 字符串
+     * @param fromIndex 切割开始的位置（包括）
+     * @return 切割后的字符串
+     */
+    public static String subSuf(String string, int fromIndex) {
+        if (isEmpty(string)) {
+            return null;
+        }
+        return sub(string, fromIndex, string.length());
+    }
+
+    /**
+     * 改进JDK subString<br>
+     * index从0开始计算，最后一个字符为-1<br>
+     * 如果from和to位置一样，返回 "" <br>
+     * 如果from或to为负数，则按照length从后向前数位置，如果绝对值大于字符串长度，则from归到0，to归到length<br>
+     * 如果经过修正的index中from大于to，则互换from和to
+     * example: <br>
+     * 	abcdefgh 2 3 -> c <br>
+     * 	abcdefgh 2 -3 -> cde <br>
+     *
+     * @param string String
+     * @param fromIndex 开始的index（包括）
+     * @param toIndex 结束的index（不包括）
+     * @return 字串
+     */
+    public static String sub(String string, int fromIndex, int toIndex) {
+        int len = string.length();
+
+        if (fromIndex < 0) {
+            fromIndex = len + fromIndex;
+            if(fromIndex < 0 ){
+                fromIndex = 0;
+            }
+        }else if(fromIndex > len){
+            fromIndex = len;
+        }
+
+        if (toIndex < 0) {
+            toIndex = len + toIndex;
+            if(toIndex < 0){
+                toIndex = len;
+            }
+        }else if(toIndex > len){
+            toIndex = len;
+        }
+
+        if (toIndex < fromIndex) {
+            int tmp = fromIndex;
+            fromIndex = toIndex;
+            toIndex = tmp;
+        }
+
+        if (fromIndex == toIndex) {
+            return EMPTY;
+        }
+
+        char[] strArray = string.toCharArray();
+        char[] newStrArray = Arrays.copyOfRange(strArray, fromIndex, toIndex);
+        return new String(newStrArray);
+    }
+
+    /**
+     * 编码字符串<br>
+     * 使用系统默认编码
+     *
+     * @param str 字符串
+     * @return 编码后的字节码
+     */
+    public static byte[] bytes(String str) {
+        return bytes(str, Charset.defaultCharset());
+    }
+
+    /**
+     * 编码字符串
+     *
+     * @param str 字符串
+     * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
+     * @return 编码后的字节码
+     */
+    public static byte[] bytes(String str, String charset) {
+        return bytes(str, isBlank(charset) ? Charset.defaultCharset() : Charset.forName(charset));
+    }
+
+    /**
+     * 编码字符串
+     *
+     * @param str 字符串
+     * @param charset 字符集，如果此字段为空，则解码的结果取决于平台
+     * @return 编码后的字节码
+     */
+    public static byte[] bytes(String str, Charset charset) {
+        if (str == null) {
+            return null;
+        }
+
+        if (null == charset) {
+            return str.getBytes();
+        }
+        return str.getBytes(charset);
+    }
 
 }

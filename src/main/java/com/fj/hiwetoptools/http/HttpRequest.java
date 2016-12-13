@@ -1,5 +1,18 @@
 package com.fj.hiwetoptools.http;
 
+import com.alibaba.fastjson.JSON;
+import com.fj.hiwetoptools.CollectionUtil;
+import com.fj.hiwetoptools.io.FileUtil;
+import com.fj.hiwetoptools.ObjectUtil;
+import com.fj.hiwetoptools.StrUtil;
+import com.fj.hiwetoptools.codec.Base64;
+import com.fj.hiwetoptools.http.ssl.SSLSocketFactoryBuilder;
+import com.fj.hiwetoptools.io.IoUtil;
+import com.fj.hiwetoptools.lang.Convert;
+import com.fj.hiwetoptools.system.UUIDUtil;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,30 +21,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-
-import org.apache.commons.io.IOUtils;
-
-import com.fj.hiwetoptools.CollectionUtil;
-import com.fj.hiwetoptools.FileUtil;
-import com.fj.hiwetoptools.ObjectUtil;
-import com.fj.hiwetoptools.StringUtil;
-import com.fj.hiwetoptools.codec.Base64;
-import com.fj.hiwetoptools.exception.bean.HttpException;
-import com.fj.hiwetoptools.http.ssl.SSLSocketFactoryBuilder;
-import com.fj.hiwetoptools.io.IoUtil;
-import com.fj.hiwetoptools.lang.Conver;
-import com.fj.hiwetoptools.system.UUIDUtil;
-
 /**
  * http请求类
  * 
  * @author Looly
  */
 public class HttpRequest extends HttpBase<HttpRequest> {
-	private static final String BOUNDARY = "--------------------HiwetopTools_" + UUIDUtil.getUUID();
-	private static final byte[] BOUNDARY_END = StringUtil.format("--{}--\r\n", BOUNDARY).getBytes();
+	private static final String BOUNDARY = "--------------------Hiwetop_" + UUIDUtil.getUUID();
+	private static final byte[] BOUNDARY_END = StrUtil.format("--{}--\r\n", BOUNDARY).getBytes();
 	private static final String CONTENT_DISPOSITION_TEMPLATE = "Content-Disposition: form-data; name=\"{}\"\r\n\r\n";
 	private static final String CONTENT_DISPOSITION_FILE_TEMPLATE = "Content-Disposition: form-data; name=\"{}\"; filename=\"{}\"\r\n";
 	
@@ -214,7 +211,7 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 	 * @param value 值
 	 */
 	public HttpRequest form(String name, Object value) {
-		if(StringUtil.isBlank(name) || ObjectUtil.isNull(value)){
+		if(StrUtil.isBlank(name) || ObjectUtil.isNull(value)){
 			return this;	//忽略非法的form表单项内容;
 		}
 		
@@ -236,7 +233,7 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 			strValue = CollectionUtil.join((Object[]) value, ",");
 		} else {
 			// 其他对象一律转换为字符串
-			strValue = Conver.toStr(value, null);
+			strValue = Convert.toStr(value, null);
 		}
 
 		form.put(name, strValue);
@@ -268,7 +265,7 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 	 * 
 	 */
 	public HttpRequest form(Map<String, Object> formMap) {
-		for (Map.Entry<String, Object> entry : formMap.entrySet()) {
+		for (Entry<String, Object> entry : formMap.entrySet()) {
 			form(entry.getKey(), entry.getValue());
 		}
 		return this;
@@ -313,7 +310,7 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 	/**
 	 * 设置内容主体
 	 * 
-	 * @param body
+	 * @param body 请求体
 	 */
 	public HttpRequest body(String body) {
 		this.body = body;
@@ -321,15 +318,46 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 		contentLength(body.length());
 		return this;
 	}
+	
+	/**
+	 * 设置内容主体
+	 * 
+	 * @param body 请求体
+	 * @param contentType 请求体类型
+	 */
+	public HttpRequest body(String body, String contentType) {
+		this.body(body);
+		this.contentType(contentType);
+		return this;
+	}
+	
+	/**
+	 * 设置JSON内容主体<br>
+	 * 设置默认的Content-Type为 application/json
+	 * 需在此方法调用前使用charset方法设置编码，否则使用默认编码UTF-8
+	 * 
+	 * @param json JSON请求体
+	 */
+	public HttpRequest body(JSON json) {
+		this.body(json.toString());
+		
+		String contentTypeJson = "application/json";
+		if(StrUtil.isNotBlank(this.charset)){
+			contentTypeJson = StrUtil.format("{};charset={}", contentTypeJson, this.charset);
+		}
+		this.contentType(contentTypeJson);
+		
+		return this;
+	}
 
 	/**
-	 * 设置主体字节码
+	 * 设置主体字节码<br>
+	 * 需在此方法调用前使用charset方法设置编码，否则使用默认编码UTF-8
 	 * 
-	 * @param content
-	 * @param contentType
+	 * @param bodyBytes 主体
 	 */
-	public HttpRequest body(byte[] content, String contentType) {
-		return body(StringUtil.toEncodedString(content, charset));
+	public HttpRequest body(byte[] bodyBytes) {
+		return body(StrUtil.str(bodyBytes, this.charset));
 	}
 	// ---------------------------------------------------------------- Body end
 
@@ -401,7 +429,7 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 	public HttpResponse execute() {
 		if (Method.GET.equals(method)) {
 			// 优先使用body形式的参数，不存在使用form
-			if (StringUtil.isNotBlank(this.body)) {
+			if (StrUtil.isNotBlank(this.body)) {
 				this.url = HttpUtil.urlWithForm(this.url, this.body);
 			} else {
 				this.url = HttpUtil.urlWithForm(this.url, this.form);
@@ -424,7 +452,6 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 			} else {
 				this.httpConnection.connect();
 			}
-
 		} catch (IOException e) {
 			throw new HttpException(e.getMessage(), e);
 		}
@@ -445,8 +472,10 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 	 */
 	public HttpRequest basicAuth(String username, String password) {
 		final String data = username.concat(":").concat(password);
-		final String base64 = Base64.encodeToString(data, charset);
+		final String base64 = Base64.encode(data, charset);
+
 		header("Authorization", "Basic " + base64, true);
+
 		return this;
 	}
 	
@@ -469,17 +498,17 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 	 * @throws IOException
 	 */
 	private void sendFormUrlEncoded() throws IOException{
-		if(StringUtil.isBlank(this.header(Header.CONTENT_TYPE))){
+		if(StrUtil.isBlank(this.header(Header.CONTENT_TYPE))){
 			//如果未自定义Content-Type，使用默认的application/x-www-form-urlencoded
 			this.httpConnection.header(Header.CONTENT_TYPE, CONTENT_TYPE_X_WWW_FORM_URLENCODED_PREFIX + this.charset, true);
 		}
 		
 		// Write的时候会优先使用body中的内容，write时自动关闭OutputStream
 		String content;
-		if (StringUtil.isNotBlank(this.body)) {
+		if (StrUtil.isNotBlank(this.body)) {
 			content = this.body;
 		} else {
-			content = HttpUtil.toParams(this.form);
+			content = HttpUtil.toParams(this.form, this.charset);
 		}
 		IoUtil.write(this.httpConnection.getOutputStream(), this.charset, true, content);
 	}
@@ -514,11 +543,11 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 		if (CollectionUtil.isNotEmpty(this.form)) {
 			StringBuilder builder = new StringBuilder();
 			for (Entry<String, Object> entry : this.form.entrySet()) {
-				builder.append("--").append(BOUNDARY).append(StringUtil.CRLF);
-				builder.append(StringUtil.format(CONTENT_DISPOSITION_TEMPLATE, entry.getKey()));
-				builder.append(entry.getValue()).append(StringUtil.CRLF);
+				builder.append("--").append(BOUNDARY).append(StrUtil.CRLF);
+				builder.append(StrUtil.format(CONTENT_DISPOSITION_TEMPLATE, entry.getKey()));
+				builder.append(entry.getValue()).append(StrUtil.CRLF);
 			}
-			IoUtil.write(out, this.charset, false, builder.toString());
+			IoUtil.write(out, this.charset, false, builder);
 		}
 	}
 
@@ -531,12 +560,12 @@ public class HttpRequest extends HttpBase<HttpRequest> {
 		File file;
 		for (Entry<String, File> entry : this.fileForm.entrySet()) {
 			file = entry.getValue();
-			StringBuilder builder = new StringBuilder().append("--").append(BOUNDARY).append(StringUtil.CRLF);
-			builder.append(StringUtil.format(CONTENT_DISPOSITION_FILE_TEMPLATE, entry.getKey(), file.getName()));
-			builder.append(StringUtil.format(CONTENT_TYPE_FILE_TEMPLATE, HttpUtil.getMimeType(file.getName())));
-			IoUtil.write(out, this.charset, false, builder.toString());
+			StringBuilder builder = new StringBuilder().append("--").append(BOUNDARY).append(StrUtil.CRLF);
+			builder.append(StrUtil.format(CONTENT_DISPOSITION_FILE_TEMPLATE, entry.getKey(), file.getName()));
+			builder.append(StrUtil.format(CONTENT_TYPE_FILE_TEMPLATE, HttpUtil.getMimeType(file.getName())));
+			IoUtil.write(out, this.charset, false, builder);
 			FileUtil.writeToStream(file, out);
-			IoUtil.write(out, this.charset, false, StringUtil.CRLF);
+			IoUtil.write(out, this.charset, false, StrUtil.CRLF);
 		}
 	}
 

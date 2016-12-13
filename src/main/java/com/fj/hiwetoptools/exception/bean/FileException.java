@@ -1,6 +1,6 @@
 package com.fj.hiwetoptools.exception.bean;
 
-import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.StrUtil;
 import com.fj.hiwetoptools.exception.ExceptionUtil;
 
 /**
@@ -25,7 +25,7 @@ public class FileException extends RuntimeException
 	 * @param params
 	 */
 	public FileException(Throwable throwable, String messageTemplate, Object... params) {
-		super(StringUtil.format(messageTemplate, params), throwable);
+		super(StrUtil.format(messageTemplate, params), throwable);
 	}
 
 	public FileException(String message)
@@ -39,7 +39,7 @@ public class FileException extends RuntimeException
 	 * @param params
 	 */
 	public FileException(String messageTemplate, Object... params) {
-		super(StringUtil.format(messageTemplate, params));
+		super(StrUtil.format(messageTemplate, params));
 	}
 
 	public FileException(Throwable cause)

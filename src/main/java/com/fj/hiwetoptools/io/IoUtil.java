@@ -19,10 +19,9 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
-import com.fj.hiwetoptools.ObjectUtil;
-import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.StrUtil;
 import com.fj.hiwetoptools.exception.bean.UtilException;
-import com.fj.hiwetoptools.lang.Conver;
+import com.fj.hiwetoptools.lang.Convert;
 
 /**
  * IO工具类
@@ -230,7 +229,7 @@ public class IoUtil {
 	 */
 	public static String read(InputStream in, String charsetName) throws IOException {
 		FastByteArrayOutputStream out = read(in);
-		return StringUtil.isBlank(charsetName) ? out.toString() : out.toString(charsetName);
+		return StrUtil.isBlank(charsetName) ? out.toString() : out.toString(charsetName);
 	}
 
 	/**
@@ -283,7 +282,7 @@ public class IoUtil {
 	 */
 	public static String read(FileChannel fileChannel, String charset) throws IOException {
 		final MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size()).load();
-		return StringUtil.str(buffer, charset);
+		return StrUtil.str(buffer, charset);
 	}
 	
 	/**
@@ -319,9 +318,9 @@ public class IoUtil {
 		
 		byte[] data = null;
 		try {
-			data = StringUtil.isBlank(charset) ? content.getBytes() : content.getBytes(charset);
+			data = StrUtil.isBlank(charset) ? content.getBytes() : content.getBytes(charset);
 		} catch (UnsupportedEncodingException e) {
-			throw new UtilException(StringUtil.format("Invalid charset [{}] !", charset), e);
+			throw new UtilException(StrUtil.format("Invalid charset [{}] !", charset), e);
 		}
 		
 		return new ByteArrayInputStream(data);
@@ -341,7 +340,7 @@ public class IoUtil {
 			osw = new OutputStreamWriter(out, charset);
 			for (Object content : contents) {
 				if(content != null) {
-					osw.write(Conver.toStr(content, StringUtil.EMPTY));
+					osw.write(Convert.toStr(content, StrUtil.EMPTY));
 					osw.flush();
 				}
 			}
@@ -363,7 +362,7 @@ public class IoUtil {
 		if(content == null) {
 			System.out.println(content);
 		}
-		System.out.println(StringUtil.format(content.toString(), param));
+		System.out.println(StrUtil.format(content.toString(), param));
 	}
 	
 	/**

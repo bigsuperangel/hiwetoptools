@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import com.fj.hiwetoptools.ObjectUtil;
 import com.fj.hiwetoptools.ReUtil;
-import com.fj.hiwetoptools.StringUtil;
+import com.fj.hiwetoptools.StrUtil;
 import com.fj.hiwetoptools.exception.bean.ValidateException;
 
 /**
@@ -55,7 +55,7 @@ public class Validator {
 	 * @return 是否为空
 	 */
 	public static <T> boolean isEmpty(T value) {
-		return (null == value || (value instanceof String && StringUtil.isEmpty((String) value)));
+		return (null == value || (value instanceof String && StrUtil.isEmpty((String) value)));
 	}
 	
 	/**
@@ -278,7 +278,7 @@ public class Validator {
 	 * @return 是否是数字
 	 */
 	public static boolean isNumber(String value) {
-		if (StringUtil.isBlank(value)) {
+		if (StrUtil.isBlank(value)) {
 			return false;
 		}
 		return isMactchRegex(NUMBERS, value);
