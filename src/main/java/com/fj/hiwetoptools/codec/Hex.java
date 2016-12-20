@@ -1,310 +1,193 @@
 package com.fj.hiwetoptools.codec;
 
+import com.fj.hiwetoptools.StrUtil;
 
-public final class Hex {
-	private Hex() {
-		throw new UnsupportedOperationException("非法构造 Hex 对象");
+import java.nio.charset.Charset;
+
+/**
+ * 十六进制（简写为hex或下标16）在数学中是一种逢16进1的进位制，一般用数字0到9和字母A到F表示（其中:A~F即10~15）。<br>
+ * 例如十进制数57，在二进制写作111001，在16进制写作39。<br>
+ * 像java,c这样的语言为了区分十六进制和十进制数值,会在十六进制数的前面加上 0x,比如0x20是十进制的32,而不是十进制的20<br>
+ * 
+ * 参考：https://my.oschina.net/xinxingegeya/blog/287476
+ *
+ */
+public class Hex {
+
+	/**
+	 * 用于建立十六进制字符的输出的小写字符数组
+	 */
+	private static final char[] DIGITS_LOWER = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+	/**
+	 * 用于建立十六进制字符的输出的大写字符数组
+	 */
+	private static final char[] DIGITS_UPPER = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+	
+	/**
+	 * 判断给定字符串是否为16进制数<br>
+	 * 如果是，需要使用对应数字类型对象的<code>decode</code>方法解码<br>
+	 * 例如：{@code Integer.decode}方法解码int类型的16进制数字
+	 * @param value 值
+	 * @return 是否为16进制
+	 */
+	public static boolean isHexNumber(String value) {
+		int index = (value.startsWith("-") ? 1 : 0);
+		return (value.startsWith("0x", index) || value.startsWith("0X", index) || value.startsWith("#", index));
 	}
 
-	public static byte[] encodeToByteArray(byte[] paramArrayOfByte) {
-		if (paramArrayOfByte == null)
-			throw new IllegalArgumentException("byteArray 参数异常");
-		return new org.apache.commons.codec.binary.Hex()
-				.encode(paramArrayOfByte);
+	//---------------------------------------------------------------------------------------------------- encode
+	/**
+	 * 将字节数组转换为十六进制字符数组
+	 *
+	 * @param data byte[]
+	 * @return 十六进制char[]
+	 */
+	public static char[] encodeHex(byte[] data) {
+		return encodeHex(data, true);
+	}
+	
+	/**
+	 * 将字节数组转换为十六进制字符数组
+	 *
+	 * @param str 字符串
+	 * @param charset 编码
+	 * @return 十六进制char[]
+	 */
+	public static char[] encodeHex(String str, Charset charset) {
+		return encodeHex(StrUtil.bytes(str, charset), true);
 	}
 
-	public static byte[] encodeToByteArray(char[] paramArrayOfChar) {
-		return encodeToByteArray(paramArrayOfChar, "UTF-8");
+	/**
+	 * 将字节数组转换为十六进制字符数组
+	 *
+	 * @param data byte[]
+	 * @param toLowerCase <code>true</code> 传换成小写格式 ， <code>false</code> 传换成大写格式
+	 * @return 十六进制char[]
+	 */
+	public static char[] encodeHex(byte[] data, boolean toLowerCase) {
+		return encodeHex(data, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
 	}
 
-	public static byte[] encodeToByteArray(char[] paramArrayOfChar,
-			String paramString) {
-		if (paramArrayOfChar == null)
-			throw new IllegalArgumentException("charArray 参数异常");
-		return encodeToByteArray(new String(paramArrayOfChar), paramString);
+	/**
+	 * 将字节数组转换为十六进制字符串
+	 *
+	 * @param data byte[]
+	 * @return 十六进制String
+	 */
+	public static String encodeHexStr(byte[] data) {
+		return encodeHexStr(data, true);
 	}
 
-	public static byte[] encodeToByteArray(String paramString) {
-		return encodeToByteArray(paramString, "UTF-8");
+	/**
+	 * 将字节数组转换为十六进制字符串
+	 *
+	 * @param data byte[]
+	 * @param toLowerCase <code>true</code> 传换成小写格式 ， <code>false</code> 传换成大写格式
+	 * @return 十六进制String
+	 */
+	public static String encodeHexStr(byte[] data, boolean toLowerCase) {
+		return encodeHexStr(data, toLowerCase ? DIGITS_LOWER : DIGITS_UPPER);
 	}
-
-	public static byte[] encodeToByteArray(String paramString1,
-			String paramString2) {
-		if (paramString1 == null)
-			throw new IllegalArgumentException("string 参数异常");
-		if (paramString2 == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		try {
-			return encodeToByteArray(paramString1.getBytes(paramString2));
-		} catch (java.io.UnsupportedEncodingException localUnsupportedEncodingException) {
+	
+	//---------------------------------------------------------------------------------------------------- decode
+	/**
+	 * 将十六进制字符数组转换为字符串
+	 *
+	 * @param hexStr 十六进制String
+	 * @param charset 编码
+	 * @return 字符串
+	 */
+	public static String decodeHexStr(String hexStr, Charset charset) {
+		if(StrUtil.isEmpty(hexStr)){
+			return hexStr;
 		}
-		throw new IllegalArgumentException("charsetName 参数异常");
+		return decodeHexStr(hexStr.toCharArray(), charset);
+	}
+	
+	/**
+	 * 将十六进制字符数组转换为字符串
+	 *
+	 * @param hexData 十六进制char[]
+	 * @param charset 编码
+	 * @return 字符串
+	 */
+	public static String decodeHexStr(char[] hexData, Charset charset) {
+		return StrUtil.str(decodeHex(hexData), charset);
 	}
 
-	public static char[] encodeToCharArray(byte[] paramArrayOfByte) {
-		return encodeToCharArray(paramArrayOfByte, false);
-	}
+	/**
+	 * 将十六进制字符数组转换为字节数组
+	 *
+	 * @param hexData 十六进制char[]
+	 * @return byte[]
+	 * @throws RuntimeException 如果源十六进制字符数组是一个奇怪的长度，将抛出运行时异常
+	 */
+	public static byte[] decodeHex(char[] hexData) {
 
-	public static char[] encodeToCharArray(byte[] paramArrayOfByte,
-			boolean paramBoolean) {
-		if (paramArrayOfByte == null)
-			throw new IllegalArgumentException("byteArray 参数异常");
-		if (paramBoolean) {
-			return org.apache.commons.codec.binary.Hex.encodeHex(
-					paramArrayOfByte, false);
+		int len = hexData.length;
+
+		if ((len & 0x01) != 0) {
+			throw new RuntimeException("Odd number of characters.");
 		}
-		return org.apache.commons.codec.binary.Hex.encodeHex(paramArrayOfByte,
-				true);
-	}
 
-	public static char[] encodeToCharArray(char[] paramArrayOfChar) {
-		return encodeToCharArray(paramArrayOfChar, "UTF-8", false);
-	}
+		byte[] out = new byte[len >> 1];
 
-	public static char[] encodeToCharArray(char[] paramArrayOfChar,
-			String paramString) {
-		return encodeToCharArray(paramArrayOfChar, paramString, false);
-	}
-
-	public static char[] encodeToCharArray(char[] paramArrayOfChar,
-			boolean paramBoolean) {
-		return encodeToCharArray(paramArrayOfChar, "UTF-8", paramBoolean);
-	}
-
-	public static char[] encodeToCharArray(char[] paramArrayOfChar,
-			String paramString, boolean paramBoolean) {
-		if (paramArrayOfChar == null)
-			throw new IllegalArgumentException("charArray 参数异常");
-		return encodeToCharArray(new String(paramArrayOfChar), paramString,
-				paramBoolean);
-	}
-
-	public static char[] encodeToCharArray(String paramString) {
-		return encodeToCharArray(paramString, "UTF-8", false);
-	}
-
-	public static char[] encodeToCharArray(String paramString1,
-			String paramString2) {
-		return encodeToCharArray(paramString1, paramString2, false);
-	}
-
-	public static char[] encodeToCharArray(String paramString,
-			boolean paramBoolean) {
-		return encodeToCharArray(paramString, "UTF-8", paramBoolean);
-	}
-
-	public static char[] encodeToCharArray(String paramString1,
-			String paramString2, boolean paramBoolean) {
-		if (paramString1 == null)
-			throw new IllegalArgumentException("string 参数异常");
-		if (paramString2 == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		try {
-			return encodeToCharArray(paramString1.getBytes(paramString2),
-					paramBoolean);
-		} catch (java.io.UnsupportedEncodingException localUnsupportedEncodingException) {
+		// two characters form the hex value.
+		for (int i = 0, j = 0; j < len; i++) {
+			int f = toDigit(hexData[j], j) << 4;
+			j++;
+			f = f | toDigit(hexData[j], j);
+			j++;
+			out[i] = (byte) (f & 0xFF);
 		}
-		throw new IllegalArgumentException("charsetName 参数异常");
-	}
 
-	public static String encodeToString(byte[] paramArrayOfByte) {
-		return encodeToString(paramArrayOfByte, false);
+		return out;
 	}
-
-	public static String encodeToString(byte[] paramArrayOfByte,
-			boolean paramBoolean) {
-		if (paramArrayOfByte == null)
-			throw new IllegalArgumentException("byteArray 参数异常");
-		if (paramBoolean) {
-			return org.apache.commons.codec.binary.Hex.encodeHexString(
-					paramArrayOfByte).toUpperCase();
+	
+	//---------------------------------------------------------------------------------------- Private method start
+	/**
+	 * 将字节数组转换为十六进制字符串
+	 *
+	 * @param data byte[]
+	 * @param toDigits 用于控制输出的char[]
+	 * @return 十六进制String
+	 */
+	private static String encodeHexStr(byte[] data, char[] toDigits) {
+		return new String(encodeHex(data, toDigits));
+	}
+	
+	/**
+	 * 将字节数组转换为十六进制字符数组
+	 *
+	 * @param data byte[]
+	 * @param toDigits 用于控制输出的char[]
+	 * @return 十六进制char[]
+	 */
+	private static char[] encodeHex(byte[] data, char[] toDigits) {
+		int l = data.length;
+		char[] out = new char[l << 1];
+		// two characters form the hex value.
+		for (int i = 0, j = 0; i < l; i++) {
+			out[j++] = toDigits[(0xF0 & data[i]) >>> 4];
+			out[j++] = toDigits[0x0F & data[i]];
 		}
-		return org.apache.commons.codec.binary.Hex.encodeHexString(
-				paramArrayOfByte).toLowerCase();
+		return out;
 	}
 
-	public static String encodeToString(char[] paramArrayOfChar) {
-		return encodeToString(paramArrayOfChar, "UTF-8", false);
-	}
-
-	public static String encodeToString(char[] paramArrayOfChar,
-			String paramString) {
-		return encodeToString(paramArrayOfChar, paramString, false);
-	}
-
-	public static String encodeToString(char[] paramArrayOfChar,
-			boolean paramBoolean) {
-		return encodeToString(paramArrayOfChar, "UTF-8", paramBoolean);
-	}
-
-	public static String encodeToString(char[] paramArrayOfChar,
-			String paramString, boolean paramBoolean) {
-		if (paramArrayOfChar == null)
-			throw new IllegalArgumentException("charArray 参数异常");
-		return encodeToString(new String(paramArrayOfChar), paramString,
-				paramBoolean);
-	}
-
-	public static String encodeToString(String paramString) {
-		return encodeToString(paramString, "UTF-8", false);
-	}
-
-	public static String encodeToString(String paramString1, String paramString2) {
-		return encodeToString(paramString1, paramString2, false);
-	}
-
-	public static String encodeToString(String paramString, boolean paramBoolean) {
-		return encodeToString(paramString, "UTF-8", paramBoolean);
-	}
-
-	public static String encodeToString(String paramString1,
-			String paramString2, boolean paramBoolean) {
-		if (paramString1 == null)
-			throw new IllegalArgumentException("string 参数异常");
-		if (paramString2 == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		try {
-			return encodeToString(paramString1.getBytes(paramString2),
-					paramBoolean);
-		} catch (java.io.UnsupportedEncodingException localUnsupportedEncodingException) {
+	/**
+	 * 将十六进制字符转换成一个整数
+	 *
+	 * @param ch 十六进制char
+	 * @param index 十六进制字符在字符数组中的位置
+	 * @return 一个整数
+	 * @throws RuntimeException 当ch不是一个合法的十六进制字符时，抛出运行时异常
+	 */
+	private static int toDigit(char ch, int index) {
+		int digit = Character.digit(ch, 16);
+		if (digit == -1) {
+			throw new RuntimeException("Illegal hexadecimal character " + ch + " at index " + index);
 		}
-		throw new IllegalArgumentException("charsetName 参数异常");
+		return digit;
 	}
-
-	public static byte[] decodeToByteArray(byte[] paramArrayOfByte)
-			throws Exception {
-		if (paramArrayOfByte == null)
-			throw new IllegalArgumentException("byteArray 参数异常");
-		try {
-			return new org.apache.commons.codec.binary.Hex()
-					.decode(paramArrayOfByte);
-		} catch (org.apache.commons.codec.DecoderException localDecoderException) {
-			StringBuilder localStringBuilder = new StringBuilder();
-			localStringBuilder
-					.append("十六进制解码失败（原因“")
-					.append(localDecoderException.toString().replace("\r", "")
-							.replace("\n", "").trim()).append("”）");
-			throw new Exception(localStringBuilder.toString());
-		}
-	}
-
-	public static byte[] decodeToByteArray(char[] paramArrayOfChar)
-			throws Exception {
-		if (paramArrayOfChar == null)
-			throw new IllegalArgumentException("charArray 参数异常");
-		try {
-			return org.apache.commons.codec.binary.Hex
-					.decodeHex(paramArrayOfChar);
-		} catch (org.apache.commons.codec.DecoderException localDecoderException) {
-			StringBuilder localStringBuilder = new StringBuilder();
-			localStringBuilder
-					.append("十六进制解码失败（原因“")
-					.append(localDecoderException.toString().replace("\r", "")
-							.replace("\n", "").trim()).append("”）");
-			throw new Exception(localStringBuilder.toString());
-		}
-	}
-
-	public static byte[] decodeToByteArray(String paramString) throws Exception {
-		if (paramString == null)
-			throw new IllegalArgumentException("string 参数异常");
-		return decodeToByteArray(paramString.toCharArray());
-	}
-
-	public static char[] decodeToCharArray(byte[] paramArrayOfByte)
-			throws Exception {
-		return decodeToCharArray(paramArrayOfByte, "UTF-8");
-	}
-
-	public static char[] decodeToCharArray(byte[] paramArrayOfByte,
-			String paramString) throws Exception {
-		if (paramString == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		try {
-			return new String(decodeToByteArray(paramArrayOfByte), paramString)
-					.toCharArray();
-		} catch (java.io.UnsupportedEncodingException localUnsupportedEncodingException) {
-		}
-		throw new IllegalArgumentException("charsetName 参数异常");
-	}
-
-	public static char[] decodeToCharArray(char[] paramArrayOfChar)
-			throws Exception {
-		return decodeToCharArray(paramArrayOfChar, "UTF-8");
-	}
-
-	public static char[] decodeToCharArray(char[] paramArrayOfChar,
-			String paramString) throws Exception {
-		if (paramString == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		try {
-			return new String(decodeToByteArray(paramArrayOfChar), paramString)
-					.toCharArray();
-		} catch (java.io.UnsupportedEncodingException localUnsupportedEncodingException) {
-		}
-		throw new IllegalArgumentException("charsetName 参数异常");
-	}
-
-	public static char[] decodeToCharArray(String paramString) throws Exception {
-		return decodeToCharArray(paramString, "UTF-8");
-	}
-
-	public static char[] decodeToCharArray(String paramString1,
-			String paramString2) throws Exception {
-		if (paramString2 == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		try {
-			return new String(decodeToByteArray(paramString1), paramString2)
-					.toCharArray();
-		} catch (java.io.UnsupportedEncodingException localUnsupportedEncodingException) {
-		}
-		throw new IllegalArgumentException("charsetName 参数异常");
-	}
-
-	public static String decodeToString(byte[] paramArrayOfByte)
-			throws Exception {
-		return decodeToString(paramArrayOfByte, "UTF-8");
-	}
-
-	public static String decodeToString(byte[] paramArrayOfByte,
-			String paramString) throws Exception {
-		if (paramString == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		try {
-			return new String(decodeToByteArray(paramArrayOfByte), paramString);
-		} catch (java.io.UnsupportedEncodingException localUnsupportedEncodingException) {
-		}
-		throw new IllegalArgumentException("charsetName 参数异常");
-	}
-
-	public static String decodeToString(char[] paramArrayOfChar)
-			throws Exception {
-		return decodeToString(paramArrayOfChar, "UTF-8");
-	}
-
-	public static String decodeToString(char[] paramArrayOfChar,
-			String paramString) throws Exception {
-		if (paramString == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		try {
-			return new String(decodeToByteArray(paramArrayOfChar), paramString);
-		} catch (java.io.UnsupportedEncodingException localUnsupportedEncodingException) {
-		}
-		throw new IllegalArgumentException("charsetName 参数异常");
-	}
-
-	public static String decodeToString(String paramString) throws Exception {
-		return decodeToString(paramString, "UTF-8");
-	}
-
-	public static String decodeToString(String paramString1, String paramString2)
-			throws Exception {
-		if (paramString2 == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		try {
-			return new String(decodeToByteArray(paramString1), paramString2);
-		} catch (java.io.UnsupportedEncodingException localUnsupportedEncodingException) {
-		}
-		throw new IllegalArgumentException("charsetName 参数异常");
-	}
+	//---------------------------------------------------------------------------------------- Private method end
 }

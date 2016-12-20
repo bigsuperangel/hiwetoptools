@@ -4,14 +4,9 @@
 package com.fj.hiwetoptools;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.fj.hiwetoptools.exception.bean.UtilException;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -578,4 +573,54 @@ public class CollectionUtil {
 
 		return map;
 	}
+    /**
+     * 数组或集合转String
+     *
+     * @param obj 集合或数组对象
+     * @return 数组字符串，与集合转字符串格式相同
+     */
+    public static String toString(Object obj) {
+        if (null == obj) {
+            return null;
+        }
+        if (isArray(obj)) {
+            try {
+                return Arrays.deepToString((Object[]) obj);
+            } catch (Exception e) {
+                final String className = obj.getClass().getComponentType().getName();
+                switch (className) {
+                    case "long":
+                        return Arrays.toString((long[]) obj);
+                    case "int":
+                        return Arrays.toString((int[]) obj);
+                    case "short":
+                        return Arrays.toString((short[]) obj);
+                    case "char":
+                        return Arrays.toString((char[]) obj);
+                    case "byte":
+                        return Arrays.toString((byte[]) obj);
+                    case "boolean":
+                        return Arrays.toString((boolean[]) obj);
+                    case "float":
+                        return Arrays.toString((float[]) obj);
+                    case "double":
+                        return Arrays.toString((double[]) obj);
+                    default:
+                        throw new UtilException(e);
+                }
+            }
+        }
+        return obj.toString();
+    }
+
+    /**
+     * 以 conjunction 为分隔符将多个对象转换为字符串
+     *
+     * @param conjunction 分隔符
+     * @param objs 数组
+     * @return 连接后的字符串
+     */
+    public static String join(String conjunction, Object... objs) {
+        return join(objs, conjunction);
+    }
 }

@@ -1,297 +1,151 @@
 package com.fj.hiwetoptools.codec.alg;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Security;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+/**
+ * AES安全编码组件
+ * 
+ * 高级数据加密标准---AES：由于DES的问题所以产生了AES,像是DES的升级，密钥建立时间短，灵敏性好，内存要求低，被广泛应用
+ * 
+ * 说明：
+ * 
+ * 对于java.security.InvalidKeyException: Illegal key size or default
+ * parameters异常， 去掉这种限制需要下载Java Cryptography Extension (JCE) Unlimited Strength
+ * Jurisdiction Policy Files， 下载包的readme.txt
+ * 有安装说明。就是替换${java_home}/jre/lib/security/
+ * 下面的local_policy.jar和US_export_policy.jar
+ */
+public class AES {
 
-import com.fj.hiwetoptools.codec.Hex;
+	/**
+	 * 密钥算法
+	 */
+	public static final String KEY_ALGORITHM = "AES";
 
-public final class AES {
-	private AES() {
-		throw new UnsupportedOperationException("非法构造 AES 对象");
+	/**
+	 * 加密/解密算法 / 工作模式 / 填充方式 Java 6支持PKCS5Padding填充方式 Bouncy
+	 * Castle支持PKCS7Padding填充方式
+	 */
+	public static final String CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";
+
+	/**
+	 * 转换密钥
+	 * 
+	 * @param key
+	 *            二进制密钥
+	 * @return Key 密钥
+	 * @throws Exception
+	 */
+	private static Key toKey(byte[] key) throws Exception {
+		// 实例化AES密钥材料
+		SecretKey secretKey = new SecretKeySpec(key, KEY_ALGORITHM);
+
+		return secretKey;
 	}
 
-	public static byte[] create128BitKeyToByteArray() {
-		return createKey(128);
+	/**
+	 * 解密
+	 * 
+	 * @param data
+	 *            待解密数据
+	 * @param key
+	 *            密钥
+	 * @return byte[] 解密数据
+	 * @throws Exception
+	 */
+	public static byte[] decrypt(byte[] data, byte[] key) throws Exception {
+		// 还原密钥
+		Key k = toKey(key);
+
+		/*
+		 * 实例化 使用PKCS7Padding填充方式，按如下方式实现 Cipher.getInstance(CIPHER_ALGORITHM, "BC");
+		 */
+		Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
+
+		// 初始化，设置为解密模式
+		cipher.init(Cipher.DECRYPT_MODE, k);
+
+		// 执行操作
+		return cipher.doFinal(data);
 	}
 
-	public static String create128BitKeyToHex() {
-		return Hex.encodeToString(createKey(128));
+	/**
+	 * 加密
+	 * 
+	 * @param data
+	 *            待加密数据
+	 * @param key
+	 *            密钥
+	 * @return byte[] 加密数据
+	 * @throws Exception
+	 */
+	public static byte[] encrypt(byte[] data, byte[] key) throws Exception {
+		// 还原密钥
+		Key k = toKey(key);
+
+		/*
+		 * 实例化 使用PKCS7Padding填充方式，按如下方式实现 Cipher.getInstance(CIPHER_ALGORITHM,
+		 * "BC");
+		 */
+		Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
+
+		// 初始化，设置为加密模式
+		cipher.init(Cipher.ENCRYPT_MODE, k);
+
+		// 执行操作
+		return cipher.doFinal(data);
 	}
 
-	public static byte[] create192BitKeyToByteArray() {
-		return createKey(192);
+	/**
+	 * 生成密钥 <br>
+	 * 
+	 * @return byte[] 二进制密钥
+	 * @throws Exception
+	 */
+	public static byte[] initKey() throws Exception {
+		// 实例化
+		KeyGenerator kg = KeyGenerator.getInstance(KEY_ALGORITHM);
+
+		/*
+		 * AES 要求密钥长度为 128位、192位或 256位
+		 */
+		kg.init(256);
+
+		// 生成秘密密钥
+		SecretKey secretKey = kg.generateKey();
+
+		// 获得密钥的二进制编码形式
+		return secretKey.getEncoded();
 	}
 
-	public static String create192BitKeyToHex() {
-		return Hex.encodeToString(createKey(192));
-	}
+	/**
+	 * 测试
+	 * 
+	 * @throws Exception
+	 */
+	public static void main() throws Exception {
+		String inputStr = "AES";
+		byte[] inputData = inputStr.getBytes();
+		System.err.println("原文:\t" + inputStr);
 
-	public static byte[] create256BitKeyToByteArray() {
-		return createKey(256);
-	}
+		// 初始化密钥
+		byte[] key = initKey();
+		System.err.println("密钥:\t" + Base64.encodeBase64String(key));
 
-	public static String create256BitKeyToHex() {
-		return Hex.encodeToString(createKey(256));
-	}
+		// 加密
+		inputData = encrypt(inputData, key);
+		System.err.println("加密后:\t" + Base64.encodeBase64String(inputData));
 
-	private static byte[] createKey(int paramInt) {
-		KeyGenerator localKeyGenerator = createKeyGenerator("AES");
-		initKeyGenerator(localKeyGenerator, paramInt);
-		SecretKey localSecretKey = localKeyGenerator.generateKey();
-		return localSecretKey.getEncoded();
-	}
+		// 解密
+		byte[] outputData = decrypt(inputData, key);
 
-	private static KeyGenerator createKeyGenerator(String paramString) {
-		try {
-			return KeyGenerator.getInstance(paramString);
-		} catch (NoSuchAlgorithmException localNoSuchAlgorithmException) {
-		}
-		throw new IllegalArgumentException("algorithmName 参数异常");
-	}
-
-	private static void initKeyGenerator(KeyGenerator paramKeyGenerator,
-			int paramInt) {
-		try {
-			paramKeyGenerator.init(paramInt);
-		} catch (InvalidParameterException localInvalidParameterException) {
-			throw new IllegalArgumentException("bit 参数异常");
-		}
-	}
-
-	public static byte[] encryptWithECBToByteArray(byte[] paramArrayOfByte1,
-			byte[] paramArrayOfByte2) throws Exception {
-		return encryptWithECBToByteArray(paramArrayOfByte1, paramArrayOfByte2,
-				"PKCS5Padding");
-	}
-
-	public static byte[] encryptWithECBToByteArray(byte[] paramArrayOfByte1,
-			byte[] paramArrayOfByte2, String paramString) throws Exception {
-		if (paramArrayOfByte1 == null)
-			throw new IllegalArgumentException("byteArray 参数异常");
-		if (paramString == null)
-			throw new IllegalArgumentException("paddingType 参数异常");
-		SecretKeySpec localSecretKeySpec = createSecretKeySpec("AES",
-				paramArrayOfByte2);
-		StringBuilder localStringBuilder1 = new StringBuilder();
-		localStringBuilder1.append("AES/ECB/").append(paramString);
-		try {
-			Cipher localCipher = Cipher.getInstance(localStringBuilder1
-					.toString());
-			localCipher.init(1, localSecretKeySpec);
-			return localCipher.doFinal(paramArrayOfByte1);
-		} catch (Exception localException) {
-			StringBuilder localStringBuilder2 = new StringBuilder();
-			localStringBuilder2
-					.append("AES 加密失败（原因“")
-					.append(localException.toString().replace("\r", "")
-							.replace("\n", "").trim()).append("”）");
-			throw new Exception(localStringBuilder2.toString());
-		}
-	}
-
-	public static byte[] encryptWithECBToByteArray(String paramString1,
-			String paramString2) throws Exception {
-		return encryptWithECBToByteArray(paramString1, "UTF-8", paramString2,
-				"PKCS5Padding");
-	}
-
-	public static byte[] encryptWithECBToByteArray(String paramString1,
-			String paramString2, String paramString3) throws Exception {
-		return encryptWithECBToByteArray(paramString1, paramString2,
-				paramString3, "PKCS5Padding");
-	}
-
-	public static byte[] encryptWithECBToByteArray(String paramString1,
-			String paramString2, String paramString3, String paramString4)
-			throws Exception {
-		if (paramString1 == null)
-			throw new IllegalArgumentException("string 参数异常");
-		if (paramString2 == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		byte[] arrayOfByte = null;
-		try {
-			arrayOfByte = Hex.decodeToByteArray(paramString3);
-		} catch (Exception localException) {
-			throw new IllegalArgumentException("key 参数异常");
-		}
-		try {
-			return encryptWithECBToByteArray(
-					paramString1.getBytes(paramString2), arrayOfByte,
-					paramString4);
-		} catch (UnsupportedEncodingException localUnsupportedEncodingException) {
-		}
-		throw new IllegalArgumentException("charsetName 参数异常");
-	}
-
-	public static String encryptWithECBToHex(byte[] paramArrayOfByte1,
-			byte[] paramArrayOfByte2) throws Exception {
-		return Hex.encodeToString(encryptWithECBToByteArray(paramArrayOfByte1,
-				paramArrayOfByte2));
-	}
-
-	public static String encryptWithECBToHex(byte[] paramArrayOfByte1,
-			byte[] paramArrayOfByte2, String paramString) throws Exception {
-		return Hex.encodeToString(encryptWithECBToByteArray(paramArrayOfByte1,
-				paramArrayOfByte2, paramString));
-	}
-
-	public static String encryptWithECBToHex(String paramString1,
-			String paramString2) throws Exception {
-		return Hex.encodeToString(encryptWithECBToByteArray(paramString1,
-				paramString2));
-	}
-
-	public static String encryptWithECBToHex(String paramString1,
-			String paramString2, String paramString3) throws Exception {
-		return Hex.encodeToString(encryptWithECBToByteArray(paramString1,
-				paramString2, paramString3));
-	}
-
-	public static String encryptWithECBToHex(String paramString1,
-			String paramString2, String paramString3, String paramString4)
-			throws Exception {
-		return Hex.encodeToString(encryptWithECBToByteArray(paramString1,
-				paramString2, paramString3, paramString4));
-	}
-
-	public static byte[] decryptWithECBToByteArray(byte[] paramArrayOfByte1,
-			byte[] paramArrayOfByte2) throws Exception {
-		return decryptWithECBToByteArray(paramArrayOfByte1, paramArrayOfByte2,
-				"PKCS5Padding");
-	}
-
-	public static byte[] decryptWithECBToByteArray(byte[] paramArrayOfByte1,
-			byte[] paramArrayOfByte2, String paramString) throws Exception {
-		if (paramArrayOfByte1 == null)
-			throw new IllegalArgumentException("byteArray 参数异常");
-		if (paramString == null)
-			throw new IllegalArgumentException("paddingType 参数异常");
-		SecretKeySpec localSecretKeySpec = createSecretKeySpec("AES",
-				paramArrayOfByte2);
-		StringBuilder localStringBuilder1 = new StringBuilder();
-		localStringBuilder1.append("AES/ECB/").append(paramString);
-		try {
-			Cipher localCipher = Cipher.getInstance(localStringBuilder1
-					.toString());
-			localCipher.init(2, localSecretKeySpec);
-			return localCipher.doFinal(paramArrayOfByte1);
-		} catch (Exception localException) {
-			StringBuilder localStringBuilder2 = new StringBuilder();
-			localStringBuilder2
-					.append("AES 解密失败（原因“")
-					.append(localException.toString().replace("\r", "")
-							.replace("\n", "").trim()).append("”）");
-			throw new Exception(localStringBuilder2.toString());
-		}
-	}
-
-	public static byte[] decryptWithECBToByteArray(String paramString1,
-			String paramString2) throws Exception {
-		return decryptWithECBToByteArray(paramString1, paramString2,
-				"PKCS5Padding");
-	}
-
-	public static byte[] decryptWithECBToByteArray(String paramString1,
-			String paramString2, String paramString3) throws Exception {
-		byte[] arrayOfByte1 = null;
-		try {
-			arrayOfByte1 = Hex.decodeToByteArray(paramString1);
-		} catch (Exception localException1) {
-			throw new IllegalArgumentException("string 参数异常");
-		}
-		byte[] arrayOfByte2 = null;
-		try {
-			arrayOfByte2 = Hex.decodeToByteArray(paramString2);
-		} catch (Exception localException2) {
-			throw new IllegalArgumentException("key 参数异常");
-		}
-		return decryptWithECBToByteArray(arrayOfByte1, arrayOfByte2,
-				paramString3);
-	}
-
-	public static String decryptWithECBToString(byte[] paramArrayOfByte1,
-			byte[] paramArrayOfByte2) throws Exception {
-		return decryptWithECBToString(paramArrayOfByte1, "UTF-8",
-				paramArrayOfByte2, "PKCS5Padding");
-	}
-
-	public static String decryptWithECBToString(byte[] paramArrayOfByte1,
-			String paramString, byte[] paramArrayOfByte2) throws Exception {
-		return decryptWithECBToString(paramArrayOfByte1, paramString,
-				paramArrayOfByte2, "PKCS5Padding");
-	}
-
-	public static String decryptWithECBToString(byte[] paramArrayOfByte1,
-			String paramString1, byte[] paramArrayOfByte2, String paramString2)
-			throws Exception {
-		if (paramString1 == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		try {
-			return new String(decryptWithECBToByteArray(paramArrayOfByte1,
-					paramArrayOfByte2, paramString2), paramString1);
-		} catch (UnsupportedEncodingException localUnsupportedEncodingException) {
-		}
-		throw new IllegalArgumentException("charsetName 参数异常");
-	}
-
-	public static String decryptWithECBToString(String paramString1,
-			String paramString2) throws Exception {
-		return decryptWithECBToString(paramString1, "UTF-8", paramString2,
-				"PKCS5Padding");
-	}
-
-	public static String decryptWithECBToString(String paramString1,
-			String paramString2, String paramString3) throws Exception {
-		return decryptWithECBToString(paramString1, paramString2, paramString3,
-				"PKCS5Padding");
-	}
-
-	public static String decryptWithECBToString(String paramString1,
-			String paramString2, String paramString3, String paramString4)
-			throws Exception {
-		if (paramString2 == null)
-			throw new IllegalArgumentException("charsetName 参数异常");
-		byte[] arrayOfByte1 = null;
-		try {
-			arrayOfByte1 = Hex.decodeToByteArray(paramString1);
-		} catch (Exception localException1) {
-			throw new IllegalArgumentException("string 参数异常");
-		}
-		byte[] arrayOfByte2 = null;
-		try {
-			arrayOfByte2 = Hex.decodeToByteArray(paramString3);
-		} catch (Exception localException2) {
-			throw new IllegalArgumentException("key 参数异常");
-		}
-		try {
-			return new String(decryptWithECBToByteArray(arrayOfByte1,
-					arrayOfByte2, paramString4), paramString2);
-		} catch (UnsupportedEncodingException localUnsupportedEncodingException) {
-		}
-		throw new IllegalArgumentException("charsetName 参数异常");
-	}
-
-	private static SecretKeySpec createSecretKeySpec(String paramString,
-			byte[] paramArrayOfByte) {
-		if ((paramArrayOfByte == null) || (paramArrayOfByte.length == 0))
-			throw new IllegalArgumentException("key 参数异常");
-		try {
-			return new SecretKeySpec(paramArrayOfByte, paramString);
-		} catch (IllegalArgumentException localIllegalArgumentException) {
-		}
-		throw new IllegalArgumentException("algorithmName 或 key 参数异常");
-	}
-
-	static {
-		Security.addProvider(new BouncyCastleProvider());
+		String outputStr = new String(outputData);
+		System.err.println("解密后:\t" + outputStr);
 	}
 }

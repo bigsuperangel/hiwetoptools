@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fj.hiwetoptools.StrUtil;
+import com.fj.hiwetoptools.system.CharsetUtil;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,39 +31,6 @@ public class WebUtil {
 	public static final String HTML_TYPE = "text/html";
 	public static final String JS_TYPE = "text/javascript";
 	public static final String EXCEL_TYPE = "application/vnd.ms-excel";
-	private static String WEB_PATH;
-
-	public static Integer getInt(HttpServletRequest request, String key,
-			Integer defVal) {
-		String obj = request.getParameter(key);
-		if ((obj == null) || ("".equals(obj.trim())))
-			return defVal;
-		try {
-			return Integer.valueOf(Integer.parseInt(obj));
-		} catch (NumberFormatException e) {
-		}
-		return defVal;
-	}
-
-	public static Long getLong(HttpServletRequest request, String key,
-			Long defVal) {
-		String obj = request.getParameter(key);
-		if ((obj == null) || ("".equals(obj.trim())))
-			return defVal;
-		try {
-			return Long.valueOf(Long.parseLong(obj));
-		} catch (NumberFormatException e) {
-		}
-		return defVal;
-	}
-
-	public static String getWebPath() {
-		return WEB_PATH;
-	}
-
-	public static void setWebPath(String path) {
-		WEB_PATH = path;
-	}
 
 	public static boolean isAjaxRequest(HttpServletRequest request) {
 		return request.getHeader("X-Requested-With") == null;
@@ -111,6 +79,7 @@ public class WebUtil {
 			HttpServletResponse response, String str) {
 		setDisableCacheHeader(response);
 		response.setHeader("Content-type", "application/json");
+        response.setCharacterEncoding(CharsetUtil.UTF_8);
 
 		PrintWriter out = null;
 		try {
@@ -162,10 +131,9 @@ public class WebUtil {
 	}
 
 	public static void setDisableCacheHeader(HttpServletResponse response) {
-		response.setDateHeader("Expires", 1L);
-		response.addHeader("Pragma", "no-cache");
-
-		response.setHeader("Cache-Control", "no-cache, no-store, max-age=0");
+        response.setDateHeader ("Expires", 0); //prevents caching at the proxy server
+        response.setHeader("Pragma","no-cache"); //HTTP 1.0
+		response.setHeader("Cache-Control", "no-cache, no-store, max-age=0");//HTTP 1.1
 	}
 
 	public static void setFileDownloadHeader(HttpServletResponse response,
@@ -196,6 +164,25 @@ public class WebUtil {
 		}
 		return reqMap;
 	}
+
+    /**
+     * 获取上下文URL全路径
+     *
+     * @param request
+     * @return
+     */
+    public static String getContextPath(HttpServletRequest request) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(request.getScheme()).append("://").append(request.getServerName());
+        int port = request.getServerPort();
+        if(port != 80 ){
+            sb.append(":").append(port);
+        }
+        sb.append(request.getContextPath());
+        String path = sb.toString();
+        sb = null;
+        return path;
+    }
 
 	/**
 	 * 获得请求路径
