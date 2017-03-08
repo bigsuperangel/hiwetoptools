@@ -7,9 +7,15 @@
  */
 package com.fj.hiwetoptools.excel;
 
+import com.fj.hiwetoptools.CollectionUtil;
+import com.fj.hiwetoptools.JsonUtil;
+import com.fj.hiwetoptools.exception.bean.ExcelException;
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,21 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-
-import com.fj.hiwetoptools.exception.bean.BaseException;
-import com.fj.hiwetoptools.exception.bean.ExcelException;
-
 /**.Excel导入工具类
- * @author 赵海龙
- * @version 1.0
  * @since 2016年5月13日 下午2:41:07
  */
 public class ExcelReadHelper {
@@ -55,9 +47,7 @@ public class ExcelReadHelper {
     
     
     /**方法：获取workbook实例
-     * @author 赵海龙
-     * @version 1.0
-     * @since 2016年5月16日 下午3:20:20
+\     * @since 2016年5月16日 下午3:20:20
      * @return
      */
     public Workbook getWorkBook(){
@@ -110,7 +100,13 @@ public class ExcelReadHelper {
                 title = this.getRowContent(row);
                 continue;
             }
+            if (row == null){
+                continue;
+            }
             Map<String,Object> map = this.rowToMap(row, title);
+            if (CollectionUtil.isEmpty(map)) {
+                continue;
+            }
             list.add(rowMapper.rowMap(row,map));
         }
         return list;
@@ -146,6 +142,7 @@ public class ExcelReadHelper {
             title = this.getRowContent(row);
         }
         int columnNum = title.length;
+        int count = 0;
         
         Map<String,Object> map = new HashMap<String, Object>(columnNum);
         for (int i = 0; i < columnNum; i++) {
@@ -153,6 +150,7 @@ public class ExcelReadHelper {
             switch (cell.getCellType()) {
             case Cell.CELL_TYPE_BLANK:
                 map.put(title[i], "");
+                count +=1;
                 break;
             case Cell.CELL_TYPE_BOOLEAN:
                 map.put(title[i], cell.getBooleanCellValue());
@@ -179,6 +177,11 @@ public class ExcelReadHelper {
                 break;
             }
         }
+
+        //判断是否整行都是空行,比如用del删除行，row不为空
+        if (count == columnNum){
+            return null;
+        }
         return map;
     }
     
@@ -186,7 +189,6 @@ public class ExcelReadHelper {
      * . 方法：获取每一行的内容
      * 
      * @param row
-     * @param columnNum
      *            列数
      * @return
      */

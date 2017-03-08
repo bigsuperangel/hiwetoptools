@@ -743,7 +743,7 @@ public class Convert {
 	 * @return 转换后的字符串
 	 */
 	public static String convertCharset(String str, String sourceCharset, String destCharset) {
-		if(StrUtil.hasBlank(str, sourceCharset, destCharset)) {
+		if(StrUtil.isAnyBlank(str, sourceCharset, destCharset)) {
 			return str;
 		}
 		

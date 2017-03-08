@@ -122,7 +122,7 @@ public class ReUtil {
 				int group = Integer.parseInt(var);
 				template = template.replace("$" + var, matcher.group(group));
 			}
-			contents[0] = StrUtil.substring(content, matcher.end(), content.length());
+			contents[0] = StrUtil.sub(content, matcher.end(), content.length());
 			return template;
 		}
 		return null;
@@ -202,7 +202,7 @@ public class ReUtil {
 		
 		Matcher matcher = Pattern.compile(regex, Pattern.DOTALL).matcher(content);
 		if (matcher.find()) {
-			return StrUtil.substring(content, matcher.end(), content.length());
+			return StrUtil.sub(content, matcher.end(), content.length());
 		}
 		return content;
 	}
