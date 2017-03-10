@@ -18,7 +18,7 @@
     <repositories>
 
         <!-- 如有Nexus私服, 取消注释并指向正确的服务器地址. -->
-        <repository>
+<!--        <repository>
             <id>nexus-repos</id>
             <name>maven-public</name>
             <url>http://192.168.0.114:8081/repository/maven-public/</url>
@@ -28,7 +28,7 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
-        </repository>
+        </repository>-->
         <!-- 设定主仓库，按设定顺序进行查找。 -->
         <repository>
             <id>alimaven</id>
@@ -39,7 +39,7 @@
 
     <!-- 设定插件仓库 -->
     <pluginRepositories>
-        <pluginRepository>
+<!--        <pluginRepository>
             <id>nexus-repos</id>
             <name>maven-public</name>
             <url>http://192.168.0.114:8081/repository/maven-public/</url>
@@ -49,7 +49,7 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </pluginRepository>
+        </pluginRepository>-->
 
         <pluginRepository>
             <id>alimaven</id>
