@@ -9,6 +9,7 @@ package com.fj.hiwetoptools.excel;
 
 import com.fj.hiwetoptools.CollectionUtil;
 import com.fj.hiwetoptools.JsonUtil;
+import com.fj.hiwetoptools.ObjectUtil;
 import com.fj.hiwetoptools.exception.bean.ExcelException;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -104,12 +105,24 @@ public class ExcelReadHelper {
                 continue;
             }
             Map<String,Object> map = this.rowToMap(row, title);
-            if (CollectionUtil.isEmpty(map)) {
+            if (CollectionUtil.isEmpty(map) || isEmptyMap(map)) {
                 continue;
             }
             list.add(rowMapper.rowMap(row,map));
         }
         return list;
+    }
+
+    private boolean isEmptyMap(Map<String,Object> map){
+        boolean isEmpty = false;
+        for (String s : map.keySet()) {
+            boolean flag = ObjectUtil.isEmpty(map.get(s));
+            if (flag) {
+                isEmpty = true;
+                break;
+            }
+        }
+        return isEmpty;
     }
     
     /**
