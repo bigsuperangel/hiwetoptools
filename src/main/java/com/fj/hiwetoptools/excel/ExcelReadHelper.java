@@ -25,7 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**.Excel导入工具类
+/**.Excel导入工具类(简单使用)
+ *  TODO 添加读取某行标题功能
  * @since 2016年5月13日 下午2:41:07
  */
 public class ExcelReadHelper {
