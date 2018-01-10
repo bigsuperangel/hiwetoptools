@@ -1,9 +1,9 @@
-/**
- * ExcelExportHelper.java类：本类位于insurance项目中的
- * com.magonchina.util包路径下，
- * 类具体的作用请参看代码中的文档注释。
- * 
- * Created By 赵海龙
+/*
+  ExcelExportHelper.java类：本类位于insurance项目中的
+  com.magonchina.util包路径下，
+  类具体的作用请参看代码中的文档注释。
+
+  Created By 赵海龙
  */
 package com.fj.hiwetoptools.excel;
 
@@ -45,7 +45,7 @@ public class ExcelWriteHelper {
      * @param rowMapper
      * @throws IOException
      */
-    public void exportExcel(String sheetName, String[] titles, List<? extends Object> dataSet,
+    public void exportExcel(String sheetName, String[] titles, List<?> dataSet,
             WriteRowMapper rowMapper) throws IOException {
         Sheet sheet = workBook.createSheet(sheetName);
         sheet.setVerticallyCenter(true);

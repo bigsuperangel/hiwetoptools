@@ -58,7 +58,7 @@ public enum Header {
 	ETAG("ETag");
 	
 	private String value;
-	private Header(String value) {
+	Header(String value) {
 		this.value = value;
 	}
 	

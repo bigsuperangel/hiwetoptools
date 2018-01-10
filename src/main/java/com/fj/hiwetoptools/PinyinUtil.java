@@ -24,8 +24,7 @@ public class PinyinUtil {
 	 * @return
 	 */
 	public static String[] getPinyin(char word) {
-		String[] pinyinArray = PinyinHelper.toHanyuPinyinStringArray(word);
-		return pinyinArray;
+		return PinyinHelper.toHanyuPinyinStringArray(word);
 	}
 
 	/**

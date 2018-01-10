@@ -4,7 +4,6 @@ import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -71,7 +70,7 @@ public class ObjectUtil {
 			}
 			return false;
 		}
-		if (obj.getClass().isArray() == true) {
+		if (obj.getClass().isArray()) {
 			int len = Array.getLength(obj);
 			for (int i = 0; i < len; i++) {
 				Object o = Array.get(obj, i);
@@ -149,7 +148,7 @@ public class ObjectUtil {
             }
             return count;
         }
-        if (obj.getClass().isArray() == true) {
+        if (obj.getClass().isArray()) {
             return Array.getLength(obj);
         }
         return -1;

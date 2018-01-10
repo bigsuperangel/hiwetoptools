@@ -465,8 +465,7 @@ public class HttpUtil {
 			return null;
 		}
 
-		String charset = ReUtil.get(CHARSET_PATTERN, conn.getContentType(), 1);
-		return charset;
+		return ReUtil.get(CHARSET_PATTERN, conn.getContentType(), 1);
 	}
 	
 	/**

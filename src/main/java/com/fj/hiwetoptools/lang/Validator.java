@@ -437,9 +437,7 @@ public class Validator {
 			}
 			if (month == 2) {
 				boolean isleap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
-				if (day > 29 || (day == 29 && !isleap)) {
-					return false;
-				}
+				return day <= 29 && (day != 29 || isleap);
 			}
 		}
 		return true;

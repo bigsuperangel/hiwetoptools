@@ -28,7 +28,7 @@ import org.dom4j.tree.DefaultAttribute;
  */
 public class XMLConverUtil{
 
-	private static Map<Class<?>,Unmarshaller> uMap = new HashMap<Class<?>,Unmarshaller>();
+	private static final Map<Class<?>,Unmarshaller> uMap = new HashMap<Class<?>,Unmarshaller>();
 
 	/**
 	 * XML to Object

@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2005-2012 springside.org.cn
- */
 package com.fj.hiwetoptools;
 
 import java.lang.reflect.Array;
@@ -116,7 +113,7 @@ public class CollectionUtil {
 	 * @return 是否为非空
 	 */
 	public static boolean isNotEmpty(Collection<?> collection) {
-		return false == isEmpty(collection);
+		return !isEmpty(collection);
 	}
 
 	/**
@@ -136,7 +133,7 @@ public class CollectionUtil {
 	 * @return 是否为非空
 	 */
 	public static <T> boolean isNotEmpty(Map<?, ?> map) {
-		return false == isEmpty(map);
+		return !isEmpty(map);
 	}
 	
 	/**
@@ -156,7 +153,7 @@ public class CollectionUtil {
 	 * @return 是否为非空
 	 */
 	public static <T> boolean isNotEmpty(T[] array) {
-		return false == isEmpty(array);
+		return !isEmpty(array);
 	}
 
 
@@ -258,9 +255,7 @@ public class CollectionUtil {
 	@SafeVarargs
 	public static <T> HashSet<T> newHashSet(T... ts) {
 		HashSet<T> set = new HashSet<T>();
-		for (T t : ts) {
-			set.add(t);
-		}
+		Collections.addAll(set, ts);
 		return set;
 	}
 	
@@ -270,9 +265,7 @@ public class CollectionUtil {
 	 * @return HashSet对象
 	 */
 	public static <T> HashSet<T> newHashSet(Collection<T> collection) {
-		HashSet<T> set = new HashSet<T>();
-		set.addAll(collection);
-		return set;
+		return new HashSet<T>(collection);
 	}
 
 	/**
@@ -283,9 +276,7 @@ public class CollectionUtil {
 	@SafeVarargs
 	public static <T> ArrayList<T> newArrayList(T... values) {
 		ArrayList<T> arrayList = new ArrayList<T>();
-		for (T t : values) {
-			arrayList.add(t);
-		}
+		Collections.addAll(arrayList, values);
 		return arrayList;
 	}
 	

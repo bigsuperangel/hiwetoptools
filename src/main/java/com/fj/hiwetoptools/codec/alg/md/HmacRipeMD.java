@@ -41,7 +41,6 @@ public abstract class HmacRipeMD {
 	 * 
 	 * @param data
 	 *            待做消息摘要处理的数据
-	 * @param byte[] 密钥
 	 * @return byte[] 消息摘要
 	 * @throws Exception
 	 */
@@ -69,8 +68,6 @@ public abstract class HmacRipeMD {
 	 * 
 	 * @param data
 	 *            待做消息摘要处理的数据
-	 * @param String
-	 *            密钥
 	 * @return byte[] 消息摘要
 	 * @throws Exception
 	 */
@@ -110,7 +107,6 @@ public abstract class HmacRipeMD {
 	 * 
 	 * @param data
 	 *            待做消息摘要处理的数据
-	 * @param byte[] 密钥
 	 * @return byte[] 消息摘要
 	 * @throws Exception
 	 */
@@ -138,7 +134,6 @@ public abstract class HmacRipeMD {
 	 * 
 	 * @param data
 	 *            待做消息摘要处理的数据
-	 * @param byte[] 密钥
 	 * @return String 消息摘要
 	 * @throws Exception
 	 */

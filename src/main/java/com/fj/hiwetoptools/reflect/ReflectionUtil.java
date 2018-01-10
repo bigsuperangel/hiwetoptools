@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2005-2012 springside.org.cn
- */
 package com.fj.hiwetoptools.reflect;
 
 import java.lang.reflect.Field;

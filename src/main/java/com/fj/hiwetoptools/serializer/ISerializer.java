@@ -6,6 +6,6 @@ package com.fj.hiwetoptools.serializer;
  *
  */
 public interface ISerializer {
-	public  byte[] serialize(Object obj);
-	public  Object deserialize(byte[] sec);
+	byte[] serialize(Object obj);
+	Object deserialize(byte[] sec);
 }

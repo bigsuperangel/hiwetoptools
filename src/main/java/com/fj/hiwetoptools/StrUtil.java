@@ -1,6 +1,8 @@
 package com.fj.hiwetoptools;
 
-import java.io.UnsupportedEncodingException;
+import com.fj.hiwetoptools.lang.StrFormatter;
+import com.fj.hiwetoptools.system.CharsetUtil;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -8,14 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.fj.hiwetoptools.lang.StrFormatter;
-import org.apache.commons.lang3.StringEscapeUtils;
-
-import com.fj.hiwetoptools.codec.EncodeUtil;
-import com.fj.hiwetoptools.system.CharsetUtil;
 
 /**
  * 字符串工具类, 继承org.apache.commons.lang3.StringUtils类
@@ -54,9 +48,6 @@ public class StrUtil {
 
     public static final String EMPTY_JSON = "{}";
 
-    /**
-     * <p>The maximum size to which the padding constant(s) can expand.</p>
-     */
     // Empty checks
     //-----------------------------------------------------------------------
     /**

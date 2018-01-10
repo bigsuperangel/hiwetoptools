@@ -26,8 +26,8 @@ public class MacUtil {
 		BufferedReader bufferedReader = null;
 		Process process = null;
 		try {
-			/**
-			 * Unix下的命令，一般取eth0作为本地主网卡 显示信息中包含有mac地址信息
+			/*
+			  Unix下的命令，一般取eth0作为本地主网卡 显示信息中包含有mac地址信息
 			 */
 			process = Runtime.getRuntime().exec("ifconfig eth0");
 			bufferedReader = new BufferedReader(new InputStreamReader(
@@ -35,16 +35,16 @@ public class MacUtil {
 			String line = null;
 			int index = -1;
 			while ((line = bufferedReader.readLine()) != null) {
-				/**
-				 * 寻找标示字符串[hwaddr]
+				/*
+				  寻找标示字符串[hwaddr]
 				 */
 				index = line.toLowerCase().indexOf("hwaddr");
-				/**
-				 * 找到了
+				/*
+				  找到了
 				 */
 				if (index != -1) {
-					/**
-					 * 取出mac地址并去除2边空格
+					/*
+					  取出mac地址并去除2边空格
 					 */
 					mac = line.substring(index + "hwaddr".length() + 1).trim();
 					break;
@@ -77,8 +77,8 @@ public class MacUtil {
 		BufferedReader bufferedReader = null;
 		Process process = null;
 		try {
-			/**
-			 * linux下的命令，一般取eth0作为本地主网卡 显示信息中包含有mac地址信息
+			/*
+			  linux下的命令，一般取eth0作为本地主网卡 显示信息中包含有mac地址信息
 			 */
 			process = Runtime.getRuntime().exec("ifconfig eth0");
 			bufferedReader = new BufferedReader(new InputStreamReader(
@@ -87,12 +87,12 @@ public class MacUtil {
 			int index = -1;
 			while ((line = bufferedReader.readLine()) != null) {
 				index = line.toLowerCase().indexOf("硬件地址");
-				/**
-				 * 找到了
+				/*
+				  找到了
 				 */
 				if (index != -1) {
-					/**
-					 * 取出mac地址并去除2边空格
+					/*
+					  取出mac地址并去除2边空格
 					 */
 					mac = line.substring(index + 4).trim();
 					break;
@@ -130,24 +130,24 @@ public class MacUtil {
 		BufferedReader bufferedReader = null;
 		Process process = null;
 		try {
-			/**
-			 * windows下的命令，显示信息中包含有mac地址信息
+			/*
+			  windows下的命令，显示信息中包含有mac地址信息
 			 */
 			process = Runtime.getRuntime().exec("ipconfig /all");
 			bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			String line = null;
 			int index = -1;
 			while ((line = bufferedReader.readLine()) != null) {
-				/**
-				 * 寻找标示字符串[physical address]
+				/*
+				  寻找标示字符串[physical address]
 				 */
 				//				index = line.toLowerCase().indexOf("physical address");
 				//				if (index != -1) {
 				if (line.split("-").length == 6){
 					index = line.indexOf(":");
 					if (index != -1) {
-						/**
-						 * 取出mac地址并去除2边空格
+						/*
+						  取出mac地址并去除2边空格
 						 */
 						mac = line.substring(index + 1).trim();
 					}
@@ -157,8 +157,8 @@ public class MacUtil {
 				if (index != -1) {
 					index = line.indexOf(":");
 					if (index != -1) {
-						/**
-						 * 取出mac地址并去除2边空格
+						/*
+						  取出mac地址并去除2边空格
 						 */
 						mac = line.substring(index + 1).trim();
 					}

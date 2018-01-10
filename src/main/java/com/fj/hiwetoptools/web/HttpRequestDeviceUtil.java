@@ -1,27 +1,11 @@
 package com.fj.hiwetoptools.web;
 
-/**
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * 
- */
-
 import javax.servlet.http.HttpServletRequest;
 
 public class HttpRequestDeviceUtil {
 
 	/** Wap网关Via头信息中特有的描述信息 */
-	private static String mobileGateWayHeaders[] = new String[] { //
+	private static final String[] mobileGateWayHeaders = new String[] { //
 	"ZXWAP",// 中兴提供的wap网关的via信息，例如：Via=ZXWAP GateWayZTE Technologies，
 			"chinamobile.com",// 中国移动的诺基亚wap网关，例如：Via=WTP/1.1
 								// GDSZ-PB-GW003-WAP07.gd.chinamobile.com (Nokia
@@ -38,10 +22,10 @@ public class HttpRequestDeviceUtil {
 							// WebProxy/5.1
 	};
 	/** 电脑上的IE或Firefox浏览器等的User-Agent关键词 */
-	private static String[] pcHeaders = new String[] { "Windows 98", "Windows ME", "Windows 2000", "Windows XP",
+	private static final String[] pcHeaders = new String[] { "Windows 98", "Windows ME", "Windows 2000", "Windows XP",
 			"Windows NT", "Ubuntu" };
 	/** 手机浏览器的User-Agent里的关键词 */
-	private static String[] mobileUserAgents = new String[] { "Nokia",// 诺基亚，有山寨机也写这个的，总还算是手机，Mozilla/5.0
+	private static final String[] mobileUserAgents = new String[] { "Nokia",// 诺基亚，有山寨机也写这个的，总还算是手机，Mozilla/5.0
 																		// (Nokia5800
 																		// XpressMusic)UC
 																		// AppleWebkit(like

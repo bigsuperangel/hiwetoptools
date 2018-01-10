@@ -1,8 +1,5 @@
 package com.fj.hiwetoptools.web;
 
-/**
- * Created by linyu on 2016/12/12.
- */
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;

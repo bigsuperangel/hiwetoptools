@@ -294,8 +294,7 @@ public class FileUtil extends FileUtils {
 		// 相对路径
 		ClassLoader classLoader = ReflectionUtil.getClassLoader();
 		URL url = classLoader.getResource(path);
-		String reultPath = url != null ? url.getPath() : ReflectionUtil.getClassLoader().getResource(StrUtil.EMPTY).getPath() + path;
-		return reultPath;
+		return url != null ? url.getPath() : ReflectionUtil.getClassLoader().getResource(StrUtil.EMPTY).getPath() + path;
 	}
 	
 	/**

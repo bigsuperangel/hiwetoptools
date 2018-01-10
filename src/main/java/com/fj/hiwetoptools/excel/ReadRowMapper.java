@@ -1,18 +1,16 @@
-/**
- * ExcelReadRowMapper.java类：本类位于insurance项目中的
- * com.magonchina.util包路径下，
- * 类具体的作用请参看代码中的文档注释。
- * 
- * Created By 赵海龙
+/*
+  ExcelReadRowMapper.java类：本类位于insurance项目中的
+  com.magonchina.util包路径下，
+  类具体的作用请参看代码中的文档注释。
+
+  Created By 赵海龙
  */
 package com.fj.hiwetoptools.excel;
 
-import java.util.Map;
-
+import com.fj.hiwetoptools.exception.bean.ExcelException;
 import org.apache.poi.ss.usermodel.Row;
 
-import com.fj.hiwetoptools.exception.bean.BaseException;
-import com.fj.hiwetoptools.exception.bean.ExcelException;
+import java.util.Map;
 
 /**.
  * @author 赵海龙
