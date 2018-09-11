@@ -1,8 +1,7 @@
 package com.fj.hiwetoptools.web;
 
 
-import com.fj.hiwetoptools.StrUtil;
-import com.fj.hiwetoptools.http.HTMLFilter;
+import com.fj.hiwetoptools.util.StrUtil;
 
 /**
  * HTML工具类

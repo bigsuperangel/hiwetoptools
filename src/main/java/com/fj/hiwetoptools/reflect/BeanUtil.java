@@ -1,18 +1,13 @@
 package com.fj.hiwetoptools.reflect;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.fj.hiwetoptools.util.CollectionUtil;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fj.hiwetoptools.CollectionUtil;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 /**
  * 操作bean 与map之间的转换

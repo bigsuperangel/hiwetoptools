@@ -7,9 +7,9 @@
  */
 package com.fj.hiwetoptools.excel;
 
-import com.fj.hiwetoptools.CollectionUtil;
-import com.fj.hiwetoptools.ObjectUtil;
-import com.fj.hiwetoptools.exception.bean.ExcelException;
+import com.fj.hiwetoptools.exceptions.ExcelException;
+import com.fj.hiwetoptools.util.CollectionUtil;
+import com.fj.hiwetoptools.util.ObjectUtil;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -116,7 +116,7 @@ public class ExcelReadHelper {
     private boolean isEmptyMap(Map<String,Object> map){
         boolean isEmpty = false;
         for (String s : map.keySet()) {
-            boolean flag = ObjectUtil.isEmpty(map.get(s));
+            boolean flag = ObjectUtil.isNull(map.get(s));
             if (flag) {
                 isEmpty = true;
                 break;

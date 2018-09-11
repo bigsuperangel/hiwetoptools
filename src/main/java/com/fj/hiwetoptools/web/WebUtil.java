@@ -14,14 +14,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.fj.hiwetoptools.StrUtil;
-import com.fj.hiwetoptools.system.CharsetUtil;
+import cn.hutool.core.util.CharsetUtil;
+import com.fj.hiwetoptools.util.StrUtil;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
-import com.fj.hiwetoptools.GsonUtil;
+import com.fj.hiwetoptools.util.GsonUtil;
 
 public class WebUtil {
 	public static final Logger logger = LoggerFactory.getLogger(WebUtil.class);

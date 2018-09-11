@@ -1,17 +1,12 @@
 package com.fj.hiwetoptools.web;
 
+import cn.hutool.core.exceptions.UtilException;
+import com.fj.hiwetoptools.util.StrUtil;
+import com.fj.hiwetoptools.reflect.ReflectionUtil;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-
-import com.fj.hiwetoptools.StrUtil;
-import com.fj.hiwetoptools.exception.bean.UtilException;
-import com.fj.hiwetoptools.reflect.ReflectionUtil;
+import java.net.*;
 
 
 /**

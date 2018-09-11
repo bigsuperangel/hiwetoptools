@@ -7,7 +7,7 @@
  */
 package com.fj.hiwetoptools.excel;
 
-import com.fj.hiwetoptools.exception.bean.ExcelException;
+import com.fj.hiwetoptools.exceptions.ExcelException;
 import org.apache.poi.ss.usermodel.Row;
 
 import java.util.Map;

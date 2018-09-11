@@ -1,6 +1,6 @@
 package com.fj.hiwetoptools.codec;
 
-import com.fj.hiwetoptools.StrUtil;
+import com.fj.hiwetoptools.util.StrUtil;
 
 import java.nio.charset.Charset;
 

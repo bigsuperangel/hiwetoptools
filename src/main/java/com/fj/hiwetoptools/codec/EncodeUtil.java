@@ -1,15 +1,14 @@
 package com.fj.hiwetoptools.codec;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-
+import cn.hutool.core.exceptions.ExceptionUtil;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import com.fj.hiwetoptools.exception.ExceptionUtil;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 /**
  * 封装各种格式的编码解码工具类.
@@ -37,7 +36,7 @@ public class EncodeUtil {
 		try {
 			return Hex.decodeHex(input.toCharArray());
 		} catch (DecoderException e) {
-			throw ExceptionUtil.unchecked(e);
+			throw ExceptionUtil.wrapRuntime(e);
 		}
 	}
 
@@ -130,7 +129,7 @@ public class EncodeUtil {
 		try {
 			return URLEncoder.encode(part, DEFAULT_URL_ENCODING);
 		} catch (UnsupportedEncodingException e) {
-			throw ExceptionUtil.unchecked(e);
+			throw ExceptionUtil.wrapRuntime(e);
 		}
 	}
 
@@ -142,7 +141,7 @@ public class EncodeUtil {
 		try {
 			return URLDecoder.decode(part, DEFAULT_URL_ENCODING);
 		} catch (UnsupportedEncodingException e) {
-			throw ExceptionUtil.unchecked(e);
+			throw ExceptionUtil.wrapRuntime(e);
 		}
 	}
 }

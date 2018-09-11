@@ -1,6 +1,5 @@
 package com.fj.hiwetop;
 
-import com.fj.hiwetoptools.ObjectUtil;
 import com.fj.hiwetoptools.web.URIUtil;
 
 public class BasicTypeTest {

@@ -2,7 +2,7 @@ package com.fj.hiwetoptools.web.bean;
 
 import org.apache.commons.lang3.Validate;
 
-import com.fj.hiwetoptools.GsonUtil;
+import com.fj.hiwetoptools.util.GsonUtil;
 
 /**
  * 响应model

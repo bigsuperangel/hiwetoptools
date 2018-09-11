@@ -1,10 +1,11 @@
 package com.fj.hiwetoptools.reflect;
 
-import com.fj.hiwetoptools.StrUtil;
-import com.fj.hiwetoptools.io.IoUtil;
-import com.fj.hiwetoptools.lang.Console;
-import com.fj.hiwetoptools.system.CharsetUtil;
+import cn.hutool.core.io.IoUtil;
+import cn.hutool.core.lang.Console;
+import cn.hutool.core.util.CharsetUtil;
+import com.fj.hiwetoptools.util.StrUtil;
 import com.fj.hiwetoptools.web.URLUtil;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -190,7 +191,7 @@ public final class ClassScaner {
         final Set<String> classPaths = getClassPaths(packageName);
         for (String classPath : classPaths) {
             // bug修复，由于路径中空格和中文导致的Jar找不到
-            classPath = URLUtil.decode(classPath, CharsetUtil.systemCharset());
+            classPath = URLUtil.decode(classPath, CharsetUtil.defaultCharsetName());
 
 //			log.debug("Scan classpath: [{}]", classPath);
             // 填充 classes
@@ -202,7 +203,7 @@ public final class ClassScaner {
             final String[] javaClassPaths = getJavaClassPaths();
             for (String classPath : javaClassPaths) {
                 // bug修复，由于路径中空格和中文导致的Jar找不到
-                classPath = URLUtil.decode(classPath, CharsetUtil.systemCharset());
+                classPath = URLUtil.decode(classPath, CharsetUtil.defaultCharsetName());
 
                 // 填充 classes
                 fillClasses(classPath, new File(classPath), packageName, classFilter, classes);
