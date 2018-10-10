@@ -4,7 +4,7 @@
 
     <groupId>com.fj</groupId>
     <artifactId>hiwetoptools</artifactId>
-    <version>3.6.0</version>
+    <version>3.6.1</version>
     <packaging>jar</packaging>
 
     <name>hiwetoptools</name>
@@ -59,7 +59,7 @@
     </pluginRepositories>
 
     <!-- 配置nexus上传 -->
-    <distributionManagement>
+    <!--<distributionManagement>
         <repository>
             <id>nexus-releases</id>
             <name>maven-releases</name>
@@ -70,7 +70,7 @@
             <name>maven-snapshots</name>
             <url>http://192.168.0.114:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
-    </distributionManagement>
+    </distributionManagement>-->
 
     <dependencies>
 
