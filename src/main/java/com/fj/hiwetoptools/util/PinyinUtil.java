@@ -1,101 +1,109 @@
 package com.fj.hiwetoptools.util;
 
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import net.sourceforge.pinyin4j.PinyinHelper;
-
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 /**
- * 拼音工具类.
+ * 拼音工具类
  * 
- * @author:ZhengChao
- * @email:zhengchao730@163.com
  */
-public class PinyinUtil {
-
+public class PinYinUtil {
 	/**
-	 * 获得单个汉子的拼音(有音标).
+	 * 将字符串中的中文转化为拼音,其他字符不变
 	 * 
-	 * @param word
+	 * @param inputString
 	 * @return
 	 */
-	public static String[] getPinyin(char word) {
-		return PinyinHelper.toHanyuPinyinStringArray(word);
-	}
+	public static String getPingYin(String inputString) {
+		HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
+		format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+		format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+		format.setVCharType(HanyuPinyinVCharType.WITH_V);
 
-	/**
-	 * 获得单个汉子的拼音(无音标).
-	 * 
-	 * @param word
-	 * @return
-	 */
-	public static String[] getPinyinDistinct(char word) {
-		Map<String, String> map = new HashMap<String, String>();
-		String[] pinyinArray = PinyinHelper.toHanyuPinyinStringArray(word);
-		if (pinyinArray == null) {
-			return null;
-		}
-		int length = 0;
-		for (int i = 0; i < pinyinArray.length; i++) {
-			String pinyin = pinyinArray[i];
-			pinyin = pinyin.substring(0, pinyin.length() - 1);
-			if (!map.containsKey(pinyin)) {
-				map.put(pinyin, pinyinArray[i]);
-				length++;
-			}
-		}
-		int index = 0;
-		String[] retArry = new String[length];
-		Set<String> set = map.keySet();
-		Iterator<String> it = set.iterator();
-		while (it.hasNext()) {
-			retArry[index] = it.next();
-			index++;
-		}
-		return retArry;
-	}
-	
-	/**
-	 * 获取词语拼音首字母 多音字获取第一个
-	 * @param s
-	 * @return
-	 */
-	public static String getPinyinFirst(String s){
-		char[] cArr = s.toCharArray();
-		StringBuffer sb = new StringBuffer();
-		for(char c : cArr){
-			try {
-				sb.append(PinyinUtil.getPinyinDistinct(c)[0].substring(0,1));
-			} catch (Exception e) {
-				return s;
-			}
-		}
-		return sb.toString();
-		
-		
-	}
-	
-	/**
-	 * 获取词语拼音 多音字获取第一个
-	 * @param s
-	 * @return
-	 */
-	public static String getPinyinAll(String s){
-		char[] cArr = s.toCharArray();
-		StringBuffer sb = new StringBuffer();
+		char[] input = inputString.trim().toCharArray();
+		String output = "";
+
 		try {
-			for(char c : cArr){
-				sb.append(PinyinUtil.getPinyinDistinct(c)[0]);
+			for (int i = 0; i < input.length; i++) {
+				if (Character.toString(input[i]).matches(
+						"[\\u4E00-\\u9FA5]+")) {
+					String[] temp = PinyinHelper.toHanyuPinyinStringArray(
+							input[i], format);
+					output += temp[0];
+				} else
+					output += Character.toString(input[i]);
 			}
-			return sb.toString();
-		} catch (Exception e) {
-			return s;
+		} catch (BadHanyuPinyinOutputFormatCombination e) {
+			e.printStackTrace();
 		}
-		
+		return output;
+	}
+
+	/**
+	 * 获取汉字串拼音首字母，英文字符不变
+	 * 
+	 * @param chinese
+	 *            汉字串
+	 * @return 汉语拼音首字母
+	 */
+	public static String getFirstSpell(String chinese) {
+		StringBuffer pybf = new StringBuffer();
+		char[] arr = chinese.toCharArray();
+		HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
+		defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+		defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] > 128) {
+				try {
+					String[] temp = PinyinHelper.toHanyuPinyinStringArray(
+							arr[i], defaultFormat);
+					if (temp != null) {
+						pybf.append(temp[0].charAt(0));
+					}
+				} catch (BadHanyuPinyinOutputFormatCombination e) {
+					e.printStackTrace();
+				}
+			} else {
+				pybf.append(arr[i]);
+			}
+		}
+		return pybf.toString().replaceAll("\\W", "").trim();
+	}
+	
+	public static String getFirstOneSpell(String chinese){
+		return getFirstSpell(chinese.substring(0, 1)).toUpperCase();
+	}
+
+	/**
+	 * 获取汉字串拼音，英文字符不变
+	 * 
+	 * @param chinese
+	 *            汉字串
+	 * @return 汉语拼音
+	 */
+	public static String getFullSpell(String chinese) {
+		StringBuffer pybf = new StringBuffer();
+		char[] arr = chinese.toCharArray();
+		HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
+		defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+		defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] > 128) {
+				try {
+					pybf.append(PinyinHelper.toHanyuPinyinStringArray(arr[i],
+							defaultFormat)[0]);
+				} catch (BadHanyuPinyinOutputFormatCombination e) {
+					e.printStackTrace();
+				}
+			} else {
+				pybf.append(arr[i]);
+			}
+		}
+		return pybf.toString();
 	}
 	
 }
