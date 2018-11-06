@@ -4,7 +4,7 @@
 
     <groupId>com.fj</groupId>
     <artifactId>hiwetoptools</artifactId>
-    <version>3.6.4</version>
+    <version>3.7.0</version>
     <packaging>jar</packaging>
 
     <name>hiwetoptools</name>
@@ -102,8 +102,9 @@
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15</artifactId>
-            <version>RELEASE</version>
+            <artifactId>bcpkix-jdk15on</artifactId>
+            <version>1.55</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
