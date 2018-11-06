@@ -4,7 +4,7 @@
 
     <groupId>com.fj</groupId>
     <artifactId>hiwetoptools</artifactId>
-    <version>3.6.1</version>
+    <version>3.6.4</version>
     <packaging>jar</packaging>
 
     <name>hiwetoptools</name>
@@ -103,8 +103,7 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15</artifactId>
-            <version>1.45</version>
-            <scope>provided</scope>
+            <version>RELEASE</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -115,8 +114,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.0</version>
-            <scope>provided</scope>
+            <version>1.2.46</version>
         </dependency>
         <dependency>
             <groupId>dom4j</groupId>
@@ -191,7 +189,14 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
-            <version>4.1.10</version>
+            <version>4.1.19</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jfinal</groupId>
+            <artifactId>jfinal</artifactId>
+            <version>3.5</version>
             <scope>provided</scope>
         </dependency>
 
