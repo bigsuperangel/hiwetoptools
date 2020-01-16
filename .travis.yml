@@ -1,15 +1,11 @@
 language: java
 
-jdk:
-#  - oraclejdk7
-  - oraclejdk8
-#  - oraclejdk9
-  - openjdk8
+script: "mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
 
-before_install:
-  - export BUILD_COVERAGE="$([ $TRAVIS_JDK_VERSION == 'oraclejdk8' ] && echo 'true')"
-install: echo "No need to run mvn install -DskipTests then mvn install.  Running mvn install."
-script: mvn install
 notifications:
   email:
     - 349731079@qq.com
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
