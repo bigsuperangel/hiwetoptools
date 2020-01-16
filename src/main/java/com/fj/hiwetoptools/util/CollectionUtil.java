@@ -87,4 +87,24 @@ public class CollectionUtil extends cn.hutool.core.collection.CollUtil {
         }
         return builder.toString();
     }
+
+    public static <T> String join(T[] array, String conjunction) {
+        StringBuilder sb = new StringBuilder();
+        boolean isFirst = true;
+        T[] var4 = array;
+        int var5 = array.length;
+
+        for(int var6 = 0; var6 < var5; ++var6) {
+            T item = var4[var6];
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                sb.append(conjunction);
+            }
+
+            sb.append(item);
+        }
+
+        return sb.toString();
+    }
 }
