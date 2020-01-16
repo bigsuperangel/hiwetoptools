@@ -1,7 +1,8 @@
 package com.fj.hiwetoptools.jfinal.jqgrid;
 
+import com.jfinal.kit.Kv;
+
 import java.util.List;
-import java.util.Map;
 
 public class JqGridModel {
 	/**
@@ -19,7 +20,7 @@ public class JqGridModel {
 	
 	private List rows;
 
-	private Map<String,Object> userdata;
+	private Kv userdata;
 
 	public long getRecords() {
 		return records;
@@ -53,11 +54,11 @@ public class JqGridModel {
 		this.rows = rows;
 	}
 
-	public Map<String, Object> getUserdata() {
+	public Kv getUserdata() {
 		return userdata;
 	}
 
-	public void setUserdata(Map<String, Object> userdata) {
+	public void setUserdata(Kv userdata) {
 		this.userdata = userdata;
 	}
 }
